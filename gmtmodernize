@@ -125,7 +125,7 @@ class GMTModernizeApp():
                 line = line.replace(redirection.group(), '').strip()
 
             # Remove -O -K -R -J
-            okrj = re.findall(r'(?<= )-[KORJ](?: +|$)', line)
+            okrj = re.findall(r'(?:(?<= )|^)-[KORJ](?: +|$)', line)
             if okrj:
                 for match in okrj:
                     line = line.replace(match, '')
