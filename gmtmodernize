@@ -1,16 +1,23 @@
 #! /usr/bin/env python
 """
+Convert GMT scripts to the new "modern" mode.
 """
 import os
 import sys
 import shutil
 import re
-from functools import partial
+
+
+def warn(*args, **kwargs):
+    """
+    Print message to stderr.
+    """
+    print(file=sys.stderr, *args, **kwargs)
 
 
 class GMTModernizeApp():
     """
-    The application class. Call ``main`` with the command line arguments.
+    The application class.
     """
 
     # List of GMT modules that generate Postscript output
@@ -45,9 +52,17 @@ class GMTModernizeApp():
     pssegy
     """.split()
 
-    def __init__(self, verbose=False, output_type='ps'):
+    def __init__(self, args, verbose=False, output_type='pdf'):
         self.verbose = verbose
         self.output_type = output_type
+        assert len(args) >= 3, \
+            'Too few arguments. Provide input dir and output dir'
+        self.input_dir = os.path.normpath(args[1])
+        self.output_dir = os.path.normpath(args[2])
+        if '--quite' in args or '-q' in args:
+            self.verbose = False
+        else:
+            self.verbose = True
 
     def info(self, *args, **kwargs):
         """
@@ -55,12 +70,6 @@ class GMTModernizeApp():
         """
         if self.verbose:
             print(file=sys.stderr, *args, **kwargs)
-
-    def warn(self, *args, **kwargs):
-        """
-        Print message to stderr always.
-        """
-        print(file=sys.stderr, *args, **kwargs)
 
     def modernize(self, script):
         """
@@ -72,15 +81,16 @@ class GMTModernizeApp():
 
         # Copy the header comments and add a command to set the mode
         # to modern after the header
-        for l, line in enumerate(script):
+        for line in script:
             line = line.strip()
             if not line or line[0] != '#':
                 break
             modern.append(line)
+        last_line = len(modern)
         modern.append('gmt set GMT_RUNMODE modern')
 
         # Parse the rest of the script
-        for line in script[l:]:
+        for line in script[last_line:]:
             line = line.strip()
 
             # Check if this line defines a .ps file name variable
@@ -118,28 +128,28 @@ class GMTModernizeApp():
 
         return modern
 
-
     def convert_script(self, old_script, modern_script):
         """
         Convert a script file in the old style to the modern style.
 
-        Reads in 'old_script', modernize it, and save the output to 'modern_scrip'.
+        Reads in 'old_script', modernize it, and save the output to
+        'modern_scrip'.
         """
         self.info('  Converting:', old_script, ' --> ', modern_script)
-        with open(old_script) as f:
-            old_content = f.readlines()
+        with open(old_script) as infile:
+            old_content = infile.readlines()
         modern_content = self.modernize(old_content)
-        with open(modern_script, 'w') as f:
-            f.write('\n'.join(modern_content))
+        with open(modern_script, 'w') as outfile:
+            outfile.write('\n'.join(modern_content))
 
-    def crawl_and_modernize(self, input_dir, output_dir, info):
+    def crawl_and_modernize(self, input_dir, output_dir):
         """
         Crawl the input dir and copy/modernize the contents to output dir.
 
         Will copy any file that isn't a shell script (ends in .sh).
         """
 
-        for base, dirs, files in os.walk(input_dir):
+        for base, _, files in os.walk(input_dir):
             self.info('Base dir:', base)
             base_output = base.replace(input_dir, output_dir)
             os.mkdir(base_output)
@@ -155,32 +165,20 @@ class GMTModernizeApp():
                 old_script = os.path.join(base, script)
                 self.convert_script(old_script, modern_script)
 
-    def main(self, args):
+    def main(self):
         """
-        Execute the app to convert the scripts passed through the command line
-        arguments.
+        Execute the app to convert the scripts.
         """
-        assert len(args) >= 3, 'Too few arguments. Provide input dir and output dir'
 
-        input_dir = args[1]
-        output_dir = args[2]
-
-        if '--quite' in args or '-q' in args:
-            self.verbose = False
-        else:
-            self.verbose = True
-
-        if os.path.exists(output_dir):
-            self.warn("Aborting: Output directory '{}' already exists.".format(
-                output_dir))
+        if os.path.exists(self.output_dir):
+            warn("Aborting: Output directory '{}' already exists.".format(
+                self.output_dir))
             return 1
 
-        self.crawl_and_modernize(input_dir, output_dir)
+        self.crawl_and_modernize(self.input_dir, self.output_dir)
 
         return 0
 
 
 if __name__ == '__main__':
-    app = GMTModernize()
-    return_code = app.main(sys.argv)
-    sys.exit(return_code)
+    sys.exit(GMTModernizeApp(sys.argv).main())
