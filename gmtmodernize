@@ -1,6 +1,23 @@
 #! /usr/bin/env python
 """
 Convert GMT scripts to the new "modern" mode.
+
+$ gmtmodernize old_script_dir modern_scripts_dir
+
+Will crawl old_script_dir and convert any '*.sh' file to the GMT modern mode.
+Modernized scripts and any other files present will be saved to
+modern_scripts_dir using the same directory tree as the old scripts.
+
+What it converts:
+
+1. Inserts "gmt set GMT_RUNMODE modern" to the start of the script.
+2. Removes -O -K -R -J (the last two only if alone).
+3. If script defines a variable "ps=somefile.ps", will remove the '.ps' from
+   the variable and insert a "psconvert ... -T$ps" at the end of the script.
+4. Removes any redirection to "> $ps".
+
+So far, it only works for the test scripts in the GMT repository or ones that
+follow this rigid format.
 """
 import os
 import sys
