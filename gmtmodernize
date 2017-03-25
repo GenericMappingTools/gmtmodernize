@@ -1,0 +1,186 @@
+#! /usr/bin/env python
+"""
+"""
+import os
+import sys
+import shutil
+import re
+from functools import partial
+
+
+class GMTModernizeApp():
+    """
+    The application class. Call ``main`` with the command line arguments.
+    """
+
+    # List of GMT modules that generate Postscript output
+    PS_MODULES = """
+    gmtlogo
+    grdcontour
+    grdimage
+    grdvector
+    grdview
+    psbasemap
+    psclip
+    pscoast
+    pscontour
+    pshistogram
+    psimage
+    pslegend
+    psmask
+    psrose
+    psscale
+    pssolar
+    pstext
+    pswiggle
+    psxyz
+    psxy
+    pscoupe
+    psmeca
+    pspolar
+    pssac
+    psvelo
+    mgd77track
+    pssegyz
+    pssegy
+    """.split()
+
+    def __init__(self, verbose=False, output_type='ps'):
+        self.verbose = verbose
+        self.output_type = output_type
+
+    def info(self, *args, **kwargs):
+        """
+        Print message to stderr according to set verbosity.
+        """
+        if self.verbose:
+            print(file=sys.stderr, *args, **kwargs)
+
+    def warn(self, *args, **kwargs):
+        """
+        Print message to stderr always.
+        """
+        print(file=sys.stderr, *args, **kwargs)
+
+    def modernize(self, script):
+        """
+        Given a GMT shell script (as a string), modernize it and return the new
+        text.
+        """
+        modern = []
+        ps_name = None
+
+        # Copy the header comments and add a command to set the mode
+        # to modern after the header
+        for l, line in enumerate(script):
+            line = line.strip()
+            if not line or line[0] != '#':
+                break
+            modern.append(line)
+        modern.append('gmt set GMT_RUNMODE modern')
+
+        # Parse the rest of the script
+        for line in script[l:]:
+            line = line.strip()
+
+            # Check if this line defines a .ps file name variable
+            ps_var_def = re.search(r'^ps=.+\.ps$', line)
+            if ps_var_def is not None:
+                ps_definition = ps_var_def.group()
+                ps_file_name = ps_definition.split('=')[1]
+                ps_name = os.path.splitext(ps_file_name)[0]
+                line = os.path.splitext(ps_definition)[0]
+
+            # Check if redirecting to the $ps variable and strip it out
+            redirect_to_ps = re.search(r'.+>+ *\$ps$', line)
+            if redirect_to_ps is not None:
+                redirection = re.search(r'>+ *\$ps$', line)
+                line = line.replace(redirection.group(), '').strip()
+
+            # Remove -O -K -R -J
+            okrj = re.findall(r'(?<= )-[KORJ](?: +|$)', line)
+            if okrj:
+                for match in okrj:
+                    line = line.replace(match, '')
+                line = line.strip()
+
+            modern.append(line)
+
+        # Only add a psconvert call if this script defined a ps variable
+        if ps_name is not None:
+            if self.output_type == 'ps':
+                args = '-Tp'
+            elif self.output_type == 'pdf':
+                args = '-Tf -P -A'
+            else:
+                assert False
+            modern.append('\ngmt psconvert {} -F$ps\n'.format(args))
+
+        return modern
+
+
+    def convert_script(self, old_script, modern_script):
+        """
+        Convert a script file in the old style to the modern style.
+
+        Reads in 'old_script', modernize it, and save the output to 'modern_scrip'.
+        """
+        self.info('  Converting:', old_script, ' --> ', modern_script)
+        with open(old_script) as f:
+            old_content = f.readlines()
+        modern_content = self.modernize(old_content)
+        with open(modern_script, 'w') as f:
+            f.write('\n'.join(modern_content))
+
+    def crawl_and_modernize(self, input_dir, output_dir, info):
+        """
+        Crawl the input dir and copy/modernize the contents to output dir.
+
+        Will copy any file that isn't a shell script (ends in .sh).
+        """
+
+        for base, dirs, files in os.walk(input_dir):
+            self.info('Base dir:', base)
+            base_output = base.replace(input_dir, output_dir)
+            os.mkdir(base_output)
+
+            scripts = set(f for f in files if os.path.splitext(f)[-1] == '.sh')
+            not_scripts = set(files).difference(scripts)
+
+            for file in not_scripts:
+                shutil.copy(os.path.join(base, file), base_output)
+
+            for script in scripts:
+                modern_script = os.path.join(base_output, script)
+                old_script = os.path.join(base, script)
+                self.convert_script(old_script, modern_script)
+
+    def main(self, args):
+        """
+        Execute the app to convert the scripts passed through the command line
+        arguments.
+        """
+        assert len(args) >= 3, 'Too few arguments. Provide input dir and output dir'
+
+        input_dir = args[1]
+        output_dir = args[2]
+
+        if '--quite' in args or '-q' in args:
+            self.verbose = False
+        else:
+            self.verbose = True
+
+        if os.path.exists(output_dir):
+            self.warn("Aborting: Output directory '{}' already exists.".format(
+                output_dir))
+            return 1
+
+        self.crawl_and_modernize(input_dir, output_dir)
+
+        return 0
+
+
+if __name__ == '__main__':
+    app = GMTModernize()
+    return_code = app.main(sys.argv)
+    sys.exit(return_code)
