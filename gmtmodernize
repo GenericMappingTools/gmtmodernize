@@ -127,12 +127,12 @@ class GMTModernizeApp():
                 line = os.path.splitext(ps_definition)[0]
 
             # Check if redirecting to the $ps variable and strip it out
-            redirect_to_ps = re.findall(r'.+>+ *\$ps$', line)
+            redirect_to_ps = re.findall(r'.+>+ *\$ps(?: +|$)', line)
             if redirect_to_ps:
                 assert len(redirect_to_ps) == 1, \
                     "Found more than 1 ps redirection in line '{}'".format(
                         line)
-                redirection = re.findall(r'>+ *\$ps$', line)[0]
+                redirection = re.findall(r'>+ *\$ps(?: +|$)', line)[0]
                 line = line.replace(redirection, '').strip()
 
             # Remove -O -K -R -J
