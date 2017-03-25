@@ -71,6 +71,7 @@ class GMTModernizeApp():
 
     def __init__(self, args, verbose=False, output_type='ps'):
         self.verbose = verbose
+        assert output_type in ['pdf', 'ps']
         self.output_type = output_type
         assert len(args) >= 3, \
             'Too few arguments. Provide input dir and output dir'
@@ -95,6 +96,11 @@ class GMTModernizeApp():
         """
         modern = []
         ps_name = None
+        if self.output_type == 'ps':
+            args = '-Tp'
+        elif self.output_type == 'pdf':
+            args = '-Tf -P -A'
+        psconvert = '\ngmt psconvert {} -F$ps\n'.format(args)
 
         # Copy the header comments and add a command to set the mode
         # to modern after the header
@@ -111,18 +117,23 @@ class GMTModernizeApp():
             line = line.strip()
 
             # Check if this line defines a .ps file name variable
-            ps_var_def = re.search(r'^ps=.+\.ps$', line)
-            if ps_var_def is not None:
-                ps_definition = ps_var_def.group()
+            ps_var_def = re.findall(r'^ps=.+\.ps$', line)
+            if ps_var_def:
+                assert len(ps_var_def) == 1, \
+                    "Found more than 1 ps variable in line '{}'".format(line)
+                ps_definition = ps_var_def[0]
                 ps_file_name = ps_definition.split('=')[1]
                 ps_name = os.path.splitext(ps_file_name)[0]
                 line = os.path.splitext(ps_definition)[0]
 
             # Check if redirecting to the $ps variable and strip it out
-            redirect_to_ps = re.search(r'.+>+ *\$ps$', line)
-            if redirect_to_ps is not None:
-                redirection = re.search(r'>+ *\$ps$', line)
-                line = line.replace(redirection.group(), '').strip()
+            redirect_to_ps = re.findall(r'.+>+ *\$ps$', line)
+            if redirect_to_ps:
+                assert len(redirect_to_ps) == 1, \
+                    "Found more than 1 ps redirection in line '{}'".format(
+                        line)
+                redirection = re.findall(r'>+ *\$ps$', line)[0]
+                line = line.replace(redirection, '').strip()
 
             # Remove -O -K -R -J
             okrj = re.findall(r'(?:(?<= )|^)-[KORJ](?: +|$)', line)
@@ -133,15 +144,20 @@ class GMTModernizeApp():
 
             modern.append(line)
 
+            # Check if line is deleting gmt.conf. Need to insert the psconvert
+            # before that.
+
         # Only add a psconvert call if this script defined a ps variable
         if ps_name is not None:
-            if self.output_type == 'ps':
-                args = '-Tp'
-            elif self.output_type == 'pdf':
-                args = '-Tf -P -A'
+            rm_gmt_conf = [i for i, line in enumerate(modern)
+                           if re.findall('(?:(?<= )|^)rm .* gmt.conf(?: +|$)',
+                                         line)]
+            assert len(rm_gmt_conf) <= 1, "Found more than 1 'rm gmt.conf'"
+            if rm_gmt_conf:
+                modern.insert(rm_gmt_conf[0], psconvert)
+                modern.append('')  # Make sure the file ends in a newline
             else:
-                assert False
-            modern.append('\ngmt psconvert {} -F$ps\n'.format(args))
+                modern.append(psconvert)
 
         return modern
 
