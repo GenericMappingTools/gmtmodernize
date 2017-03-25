@@ -14,3 +14,5 @@ gmtmodernize: Convert GMT5 scripts to the new "modern" mode
 
 This is **work in progress**. So far, it can convert some of the test and
 example scripts from the GMT repository.
+
+The code is in the Python script ``gmtmodernize``.
