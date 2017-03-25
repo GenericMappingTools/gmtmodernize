@@ -69,7 +69,7 @@ class GMTModernizeApp():
     pssegy
     """.split()
 
-    def __init__(self, args, verbose=False, output_type='pdf'):
+    def __init__(self, args, verbose=False, output_type='ps'):
         self.verbose = verbose
         self.output_type = output_type
         assert len(args) >= 3, \
