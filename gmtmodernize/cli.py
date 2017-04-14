@@ -213,5 +213,5 @@ class GMTModernizeApp():
         return 0
 
 
-if __name__ == '__main__':
+def main():
     sys.exit(GMTModernizeApp(sys.argv).main())
