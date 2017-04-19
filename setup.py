@@ -48,8 +48,8 @@ ENTRY_POINTS = {
 # DEPENDENCIES
 # #############################################################################
 INSTALL_REQUIRES = [
-    'docopt',
-    'tqdm',
+    # 'docopt',
+    # 'tqdm',
 ]
 
 if __name__ == '__main__':
