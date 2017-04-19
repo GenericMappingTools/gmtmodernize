@@ -1,0 +1,13 @@
+name: gmtmodernize
+channels:
+    - defaults
+    - conda-forge
+dependencies:
+    - python=3.6
+    - docopt
+    - tqdm
+    - pytest
+    - pytest-cov
+    - flake8
+    - pylint
+    - coverage

@@ -1,4 +1,3 @@
-#! /usr/bin/env python
 """
 Convert GMT scripts to the new "modern" mode.
 
@@ -213,5 +212,5 @@ class GMTModernizeApp():
         return 0
 
 
-if __name__ == '__main__':
+def main():
     sys.exit(GMTModernizeApp(sys.argv).main())

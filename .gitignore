@@ -3,3 +3,4 @@
 .ipynb_checkpoints
 *.pyc
 test_modern
+*.egg-info
