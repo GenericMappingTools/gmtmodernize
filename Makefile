@@ -32,10 +32,10 @@ coverage:
 	rm -r $(TESTDIR)
 
 pep8:
-	flake8 gmt setup.py
+	flake8 gmtmodernize setup.py
 
 lint:
-	pylint gmt setup.py
+	pylint gmtmodernize setup.py
 
 check: pep8 lint
 

@@ -46,8 +46,9 @@ install:
 
 script:
     # Run the test suite
-    # Check code for PEP8 style and lint for code quality
-    - make check
+    - if [ "$COVERAGE" == "true" ]; then make coverage; else make test; fi
+    # Check code for PEP8 style
+    - make pep8
 
 after_success:
     - if [ "$COVERAGE" == "true" ]; then coveralls; fi

@@ -1,4 +1,3 @@
-import os
 from setuptools import setup, find_packages
 # import versioneer
 
@@ -43,7 +42,7 @@ CLASSIFIERS = [
 ]
 KEYWORDS = ''
 ENTRY_POINTS = {
-    'console_scripts': ['gmtmodernize=gmtmodernize.cli:main',]
+    'console_scripts': ['gmtmodernize=gmtmodernize.cli:main', ]
 }
 
 # DEPENDENCIES

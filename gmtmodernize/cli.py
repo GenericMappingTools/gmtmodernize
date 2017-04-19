@@ -1,4 +1,3 @@
-#! /usr/bin/env python
 """
 Convert GMT scripts to the new "modern" mode.
 
