@@ -40,7 +40,7 @@ lint:
 check: pep8 lint
 
 package:
-	python setup.py sdist --formats=gztar,zip
+	python setup.py sdist --formats=gztar
 
 clean:
 	find . -name "*.pyc" -exec rm -v {} \;

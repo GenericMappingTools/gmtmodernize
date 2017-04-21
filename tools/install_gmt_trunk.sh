@@ -2,7 +2,7 @@
 # Thanks to the build script of the gmt conda-forge package by ocefpaf:
 # https://github.com/conda-forge/gmt-feedstock/
 
-PREFIX=$HOME/bin/anaconda
+PREFIX=$CONDA_PREFIX
 GMTPATH=$PREFIX
 
 cd build

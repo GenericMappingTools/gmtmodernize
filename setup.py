@@ -23,7 +23,7 @@ VERSION = '0.1a0'
 with open("README.rst") as f:
     LONG_DESCRIPTION = ''.join(f.readlines())
 PACKAGES = find_packages(exclude=['doc', 'ci', 'test', 'example'])
-LICENSE = ""
+LICENSE = "BSD License"
 URL = "https://github.com/GenericMappingTools/gmtmodernize"
 PLATFORMS = "Any"
 SCRIPTS = []
@@ -36,7 +36,6 @@ CLASSIFIERS = [
     "Intended Audience :: Education",
     "Topic :: Scientific/Engineering",
     "Topic :: Software Development :: Libraries",
-    "Programming Language :: Python :: 3.5",
     "Programming Language :: Python :: 3.6",
     "License :: OSI Approved :: {}".format(LICENSE),
 ]

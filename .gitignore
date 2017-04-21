@@ -4,3 +4,4 @@
 *.pyc
 test_modern
 *.egg-info
+dist
