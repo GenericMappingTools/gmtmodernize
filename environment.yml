@@ -11,3 +11,11 @@ dependencies:
     - flake8
     - pylint
     - coverage
+    # GMT dependencies
+    - cmake
+    - fftw
+    - gdal
+    - ghostscript
+    - libnetcdf
+    - hdf5
+    - zlib
