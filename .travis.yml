@@ -33,16 +33,17 @@ before_install:
     - conda create -n testenv --yes pip python=$PYTHON
     - source activate testenv
     # Install dependencies
-    - conda install --yes flake8 pylint
+    - conda install --yes --file requirements.txt -c conda-forge
     - if [ "$COVERAGE" == "true" ]; then pip install coveralls==0.5; fi
     # Show installed pkg information for postmortem diagnostic
     - conda list
     # Checkout and build GMT
+    - cd build; bash install_gmt_trunk.sh; cd ..
 
 install:
     # Package and install
-    #- python setup.py sdist --formats=gztar
-    #- pip install dist/*.tar.gz
+    - python setup.py sdist --formats=gztar
+    - pip install dist/*.tar.gz
 
 script:
     # Run the test suite
