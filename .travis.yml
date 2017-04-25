@@ -38,7 +38,7 @@ before_install:
     # Show installed pkg information for postmortem diagnostic
     - conda list
     # Checkout and build GMT
-    - cd build; bash install_gmt_trunk.sh; cd ..
+    - cd build; LIBPATH=/home/travis/miniconda3 ./install_gmt_trunk.sh; cd ..
 
 install:
     # Package and install
