@@ -30,8 +30,9 @@ before_install:
     - source ci/install-miniconda.sh
     # Create a conda env to install required libraries
     - conda update --yes conda
-    - conda create -n testenv --yes pip python=$PYTHON
-    - source activate testenv
+    #- conda create -n testenv --yes pip python=$PYTHON
+    #- source activate testenv
+    - conda install --yes python=$PYTHON pip
     # Install dependencies
     - conda install --yes --file requirements.txt -c conda-forge
     - if [ "$COVERAGE" == "true" ]; then pip install coveralls==0.5; fi
