@@ -50,7 +50,7 @@ else
     echo ""
     echo "Checkout SVN repo"
     echo ""
-    svn checkout svn://gmtserver.soest.hawaii.edu/gmt5/trunk $GMTREPO
+    svn checkout -q svn://gmtserver.soest.hawaii.edu/gmt5/trunk $GMTREPO
     cd $GMTREPO
 fi
 
