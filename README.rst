@@ -1,5 +1,5 @@
-gmtmodernize: Convert GMT5 scripts to the new "modern" mode
-===========================================================
+gmtmodernize: Convert GMT5 scripts to the "modern" mode
+=======================================================
 
 .. image:: http://img.shields.io/pypi/v/gmtmodernize.svg?style=flat-square
     :alt: Latest version on PyPI
@@ -12,7 +12,41 @@ gmtmodernize: Convert GMT5 scripts to the new "modern" mode
     :target: https://coveralls.io/r/GenericMappingTools/gmtmodernize?branch=master
 
 
+Disclaimer
+----------
+
 This is **work in progress**. So far, it can convert some of the test and
 example scripts from the GMT repository.
 
-The code is in the Python script ``gmtmodernize``.
+
+About
+-----
+
+GMT is introducing a "modern" execution mode that reduces the amount of
+arguments needed for many programs and handles the PostScript layer-caking
+on the background.
+
+Read more about it:
+
+* [Version 2.0 of the modern mode spec](http://gmt.soest.hawaii.edu/boards/2/topics/5138)
+* [Initial proposal](http://gmt.soest.hawaii.edu/projects/gmt/wiki/Modernization)
+
+
+Installing
+----------
+
+``gmtmodernize`` is in **alpha** status and can be installed using ``pip``:
+
+    pip install gmtmodernize --pre
+    
+    
+Using
+-----
+
+The package provides a command-line interface through the ``gmtmodernize`` command:
+
+    gmtmodernize OLD_SCRIPTS_FOLDER MODERN_SCRIPTS_FOLDER
+    
+The program will crawl through the ``OLD_SCRIPTS_FOLDER`` and convert any ``.sh`` files
+it finds. The directory structure will be mirrored in ``MODER_SCRIPTS_FOLDER``.
+All other files will be copied to ``MODER_SCRIPTS_FOLDER``.
