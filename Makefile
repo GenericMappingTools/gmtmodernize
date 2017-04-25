@@ -7,6 +7,7 @@ help:
 	@echo ""
 	@echo "    develop       install in editable mode"
 	@echo "    test          run the test suite (including doctests)"
+	@echo "    gmt           update and install GMT from source"
 	@echo "    check         run all code quality checks (pep8, linter)"
 	@echo "    pep8          check for PEP8 style compliance"
 	@echo "    lint          run static analysis using pylint"
@@ -16,6 +17,9 @@ help:
 
 develop:
 	pip install --no-deps -e .
+
+gmt:
+	cd tools; ./install_gmt_trunk.sh
 
 test:
 	# Run a tmp folder to make sure the tests are run on the installed version
