@@ -28,14 +28,14 @@ on the background.
 
 Read more about it:
 
-* [Version 2.0 of the modern mode spec](http://gmt.soest.hawaii.edu/boards/2/topics/5138)
-* [Initial proposal](http://gmt.soest.hawaii.edu/projects/gmt/wiki/Modernization)
+* `Version 2.0 of the modern mode spec <http://gmt.soest.hawaii.edu/boards/2/topics/5138>`__
+* `Initial proposal <http://gmt.soest.hawaii.edu/projects/gmt/wiki/Modernization>`__
 
 
 Installing
 ----------
 
-``gmtmodernize`` is in **alpha** status and can be installed using ``pip``:
+``gmtmodernize`` is in **alpha** status and can be installed using ``pip``::
 
     pip install gmtmodernize --pre
     
@@ -43,7 +43,7 @@ Installing
 Using
 -----
 
-The package provides a command-line interface through the ``gmtmodernize`` command:
+The package provides a command-line interface through the ``gmtmodernize`` command::
 
     gmtmodernize OLD_SCRIPTS_FOLDER MODERN_SCRIPTS_FOLDER
     
