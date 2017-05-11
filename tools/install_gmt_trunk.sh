@@ -51,8 +51,13 @@ else
     echo "Checkout SVN repo"
     echo ""
     svn checkout -q svn://gmtserver.soest.hawaii.edu/gmt5/trunk $GMTREPO
+    #svn checkout -q svn://gmtserver.soest.hawaii.edu/gmt5/tags/5.4.1 $GMTREPO
     cd $GMTREPO
 fi
+
+# Turn on modern mode compilation flag
+cp cmake/ConfigUserTemplate.cmake cmake/ConfigUser.cmake
+echo "add_definitions(-DTEST_MODERN)" >> cmake/ConfigUser.cmake
 
 # Clean the build dir
 if [[ -d build ]]; then
@@ -60,6 +65,7 @@ if [[ -d build ]]; then
     echo "Remove build dir"
     rm -r build
 fi
+[
 mkdir -p build && cd build
 
 echo ""
