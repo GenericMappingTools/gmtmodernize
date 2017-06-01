@@ -17,12 +17,7 @@ os:
 env:
     global:
         - COVERAGE=false
-        - if [ "$TRAVIS_OS_NAME" == "osx" ]; then
-            CONDA_PATH=/Users/travis/miniconda3;
-          else
-            CONDA_PATH=/home/travis/miniconda3;
-          fi
-
+        - if [ "$TRAVIS_OS_NAME" == "osx" ]; then CONDA_PATH=/Users/travis/miniconda3; else CONDA_PATH=/home/travis/miniconda3; fi
 
     matrix:
         - PYTHON=3.5 GMT=5.4.1
