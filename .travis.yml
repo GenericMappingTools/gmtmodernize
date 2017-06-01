@@ -43,7 +43,7 @@ before_install:
     - conda install --yes --file requirements.txt -c conda-forge
     - if [ "$COVERAGE" == "true" ]; then pip install coveralls==0.5; fi
     # Install gmt from conda-forge or checkout and build trunk
-    - if [ "$GMT" == "trunk" ]; then cd tools && LIBPATH=$CONDA_PATH ./install_gmt_trunk.sh; cd ..; else conda install gmt=$GMT -c conda-forge; fi
+    - if [ "$GMT" == "trunk" ]; then cd tools && LIBPATH=$CONDA_PATH ./install_gmt_trunk.sh; cd ..; else conda install --yes gmt=$GMT -c conda-forge; fi
     # Show installed pkg information for postmortem diagnostic
     - conda list
 
