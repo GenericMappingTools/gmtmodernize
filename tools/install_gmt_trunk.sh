@@ -5,7 +5,7 @@
 # Does not work inside environment for some reason.
 # Need to find away to compile this more easily.
 #LIBPATH=$CONDA_PREFIX
-LIBPATH=${LIBPATH:-$HOME/bin/anaconda/}
+LIBPATH=${LIBPATH:-$HOME/bin/anaconda}
 GMTLIBPATH="$LIBPATH/lib"
 DATADIR="$LIBPATH/share/coast"
 GMTREPO=gmt-trunk
@@ -65,7 +65,7 @@ if [[ -d build ]]; then
     echo "Remove build dir"
     rm -r build
 fi
-[
+
 mkdir -p build && cd build
 
 echo ""

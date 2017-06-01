@@ -5,11 +5,3 @@ pytest-cov
 flake8
 pylint
 coverage
-cmake
-fftw
-gdal
-ghostscript
-libnetcdf
-hdf5
-zlib
-icu

@@ -17,11 +17,18 @@ os:
 env:
     global:
         - COVERAGE=false
+        - CONDA_PATH=/home/travis/miniconda3
 
     # Build under all combinations of the of the following
     matrix:
-        - PYTHON=3.5
-        - PYTHON=3.6 COVERAGE=true
+        - PYTHON=3.5 GMT=5.4.1
+        - PYTHON=3.5 GMT=trunk
+        - PYTHON=3.6 GMT=5.4.1 COVERAGE=true
+        - PYTHON=3.6 GMT=trunk
+
+matrix:
+    allow_failures:
+        - env: GMT=trunk
 
 before_install:
     # Get Miniconda from Continuum
@@ -36,12 +43,10 @@ before_install:
     # Install dependencies
     - conda install --yes --file requirements.txt -c conda-forge
     - if [ "$COVERAGE" == "true" ]; then pip install coveralls==0.5; fi
+    # Install gmt from conda-forge or checkout and build trunk
+    - if [ "$GMT" == "trunk" ]; then cd tools && LIBPATH=$CONDA_PATH ./install_gmt_trunk.sh; cd ..; else conda install gmt=$GMT -c conda-forge; fi
     # Show installed pkg information for postmortem diagnostic
     - conda list
-    # Checkout and build GMT
-    - cd tools
-    - LIBPATH=/home/travis/miniconda3 ./install_gmt_trunk.sh
-    - cd ..
 
 install:
     # Package and install
