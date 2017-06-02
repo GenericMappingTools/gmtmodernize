@@ -4,7 +4,6 @@ channels:
     - conda-forge
 dependencies:
     - python=3.6
-    - gmt
     - docopt
     - tqdm
     - pytest
@@ -20,4 +19,3 @@ dependencies:
     - libnetcdf
     - hdf5
     - zlib
-    - icu

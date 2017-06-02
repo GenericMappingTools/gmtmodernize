@@ -17,17 +17,11 @@ os:
 env:
     global:
         - COVERAGE=false
-        - CONDA_PREFIX=/home/travis/miniconda3
 
+    # Build under all combinations of the of the following
     matrix:
-        - PYTHON=3.5 GMT=5.4.1
-        #- PYTHON=3.5 GMT=trunk
-        - PYTHON=3.6 GMT=5.4.1 COVERAGE=true
-        #- PYTHON=3.6 GMT=trunk
-
-matrix:
-    allow_failures:
-        - env: GMT=trunk
+        - PYTHON=3.5
+        - PYTHON=3.6 COVERAGE=true
 
 before_install:
     # Get Miniconda from Continuum
@@ -36,23 +30,19 @@ before_install:
     - source ci/install-miniconda.sh
     # Create a conda env to install required libraries
     - conda update --yes conda
-    #- conda create -n testenv --yes pip python=$PYTHON
-    #- source activate testenv
-    - conda install --yes python=$PYTHON pip -c conda-forge
+    - conda create -n testenv --yes pip python=$PYTHON
+    - source activate testenv
     # Install dependencies
-    - conda install --yes --file requirements.txt -c conda-forge
+    - conda install --yes flake8 pylint
     - if [ "$COVERAGE" == "true" ]; then pip install coveralls==0.5; fi
-    - if [ "$GMT" == "trunk" ]; then conda install --yes --file requirements-gmt.txt -c conda-forge; fi
-    # Install gmt from conda-forge or checkout and build trunk (place in conda
-    # path)
-    - if [ "$GMT" == "trunk" ]; then ./ci/install-gmt-trunk.sh; else conda install --yes gmt=$GMT -c conda-forge; fi
     # Show installed pkg information for postmortem diagnostic
     - conda list
+    # Checkout and build GMT
 
 install:
     # Package and install
-    - python setup.py sdist --formats=gztar
-    - pip install dist/*.tar.gz
+    #- python setup.py sdist --formats=gztar
+    #- pip install dist/*.tar.gz
 
 script:
     # Run the test suite

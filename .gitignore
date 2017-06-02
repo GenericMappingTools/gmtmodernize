@@ -6,4 +6,3 @@ test_modern
 *.egg-info
 dist
 tools/gmt-trunk
-gmt-trunk
