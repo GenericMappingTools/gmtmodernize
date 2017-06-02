@@ -1,0 +1,8 @@
+cmake
+fftw
+gdal
+ghostscript
+libnetcdf
+hdf5
+zlib
+icu
