@@ -1,13 +1,16 @@
 # Build, package, test, and clean
 
 TESTDIR=tmp-test-dir-with-unique-name
+PYTEST_ARGS=--doctest-modules -v --pyargs
+PYTEST_COV_ARGS=--cov-config=../.coveragerc --cov-report=term-missing
+
+.PHONY: test
 
 help:
 	@echo "Commands:"
 	@echo ""
 	@echo "    develop       install in editable mode"
 	@echo "    test          run the test suite (including doctests)"
-	@echo "    gmt           update and install GMT from source"
 	@echo "    check         run all code quality checks (pep8, linter)"
 	@echo "    pep8          check for PEP8 style compliance"
 	@echo "    lint          run static analysis using pylint"
@@ -18,21 +21,15 @@ help:
 develop:
 	pip install --no-deps -e .
 
-gmt:
-	cd tools; ./install_gmt_trunk.sh
-
 test:
-	# Run a tmp folder to make sure the tests are run on the installed version
-	# of Fatiando
 	mkdir -p $(TESTDIR)
-	cd $(TESTDIR); python -c "assert True"
+	cd $(TESTDIR); python -c "import gmtmodernize; gmtmodernize.test()"
 	rm -r $(TESTDIR)
 
 coverage:
-	# Run a tmp folder to make sure the tests are run on the installed version
-	# of Fatiando
 	mkdir -p $(TESTDIR)
-	cd $(TESTDIR); python -c "assert True"
+	cd $(TESTDIR); pytest $(PYTEST_COV_ARGS) --cov=gmtmodernize $(PYTEST_ARGS) gmtmodernize
+	cp $(TESTDIR)/.coverage* .
 	rm -r $(TESTDIR)
 
 pep8:
