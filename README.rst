@@ -95,5 +95,5 @@ Example::
 
     with open('classic_script.sh') as f:
         classic = f.read()
-    with open('modern_script.sh') as f:
+    with open('modern_script.sh', 'w') as f:
         f.write(modernize(classic))
