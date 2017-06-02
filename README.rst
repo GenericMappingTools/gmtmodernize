@@ -69,10 +69,31 @@ Installing
 Using
 -----
 
-The package provides a command-line interface through the ``gmtmodernize`` command::
+Command line
+++++++++++++
 
-    gmtmodernize OLD_SCRIPTS_FOLDER MODERN_SCRIPTS_FOLDER
+The package provides a command-line interface through the ``gmtmodernize``
+command::
 
-The program will crawl through the ``OLD_SCRIPTS_FOLDER`` and convert any ``.sh`` files
-it finds. The directory structure will be mirrored in ``MODER_SCRIPTS_FOLDER``.
-All other files will be copied to ``MODER_SCRIPTS_FOLDER``.
+    gmtmodernize <classic_scripts> <modern_scripts>
+
+The program will crawl through the ``classic_scripts`` folder and convert any
+``.sh`` files it finds. The directory structure will be mirrored in
+``modern_scripts``.  All other files will be copied to
+``modern_scripts``.
+
+Library
++++++++
+
+Alternatively, you can run the conversion using the ``gmtmodernize`` Python
+library. It exposes a ``modernize`` function that takes a classic script (as a
+single string) and outputs a modern script (also as a single string).
+
+Example::
+
+    from gmtmodernize import modernize
+
+    with open('classic_script.sh') as f:
+        classic = f.read()
+    with open('modern_script.sh') as f:
+        f.write(modernize(classic))
