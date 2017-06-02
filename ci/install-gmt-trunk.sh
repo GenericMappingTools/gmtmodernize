@@ -2,14 +2,18 @@
 # Thanks to the build script of the gmt conda-forge package by ocefpaf:
 # https://github.com/conda-forge/gmt-feedstock/
 
-# Does not work inside environment for some reason.
-# Need to find away to compile this more easily.
-#LIBPATH=$CONDA_PREFIX
-LIBPATH=${LIBPATH:-$HOME/bin/anaconda}
+# To return a failure if any commands inside fail
+set -e
+
+LIBPATH=$CONDA_PREFIX
 GMTLIBPATH="$LIBPATH/lib"
 DATADIR="$LIBPATH/share/coast"
 GMTREPO=gmt-trunk
 CPU_COUNT=`nproc`
+
+echo ""
+echo "Installing GMT from source to $GMTLIBPATH"
+echo ""
 
 # Download coastline data if it's not yet present
 if [[ ! -d "$DATADIR" ]]; then
@@ -84,3 +88,7 @@ echo ""
 echo "Build and install"
 echo ""
 make -j$CPU_COUNT && make install
+
+# Workaround for https://github.com/travis-ci/travis-ci/issues/6522
+# Turn off exit on failure.
+set +e

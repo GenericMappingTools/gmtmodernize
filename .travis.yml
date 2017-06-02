@@ -17,7 +17,7 @@ os:
 env:
     global:
         - COVERAGE=false
-        - if [ "$TRAVIS_OS_NAME" == "osx" ]; then CONDA_PATH=/Users/travis/miniconda3; else CONDA_PATH=/home/travis/miniconda3; fi
+        - if [ "$TRAVIS_OS_NAME" == "osx" ]; then CONDA_PREFIX=/Users/travis/miniconda3; else CONDA_PREFIX=/home/travis/miniconda3; fi
 
     matrix:
         - PYTHON=3.5 GMT=5.4.1
@@ -42,8 +42,10 @@ before_install:
     # Install dependencies
     - conda install --yes --file requirements.txt -c conda-forge
     - if [ "$COVERAGE" == "true" ]; then pip install coveralls==0.5; fi
-    # Install gmt from conda-forge or checkout and build trunk
-    - if [ "$GMT" == "trunk" ]; then cd tools && LIBPATH=$CONDA_PATH ./install_gmt_trunk.sh; cd ..; else conda install --yes gmt=$GMT -c conda-forge; fi
+    - if [ "$GMT" == "trunk" ]; then conda install --yes --file requirements-gmt.txt -c conda-forge; fi
+    # Install gmt from conda-forge or checkout and build trunk (place in conda
+    # path)
+    - if [ "$GMT" == "trunk" ]; then ./ci/install-gmt-trunk.sh; else conda install --yes gmt=$GMT -c conda-forge; fi
     # Show installed pkg information for postmortem diagnostic
     - conda list
 
