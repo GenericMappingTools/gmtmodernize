@@ -9,3 +9,4 @@ tools/gmt-trunk
 gmt-trunk
 .cache
 .coverage
+example/*.pdf

@@ -1,6 +1,5 @@
 name: gmtmodernize
 channels:
-    - defaults
     - conda-forge
 dependencies:
     - python=3.6
@@ -12,12 +11,3 @@ dependencies:
     - flake8
     - pylint
     - coverage
-    # GMT dependencies
-    - cmake
-    - fftw
-    - gdal
-    - ghostscript
-    - libnetcdf
-    - hdf5
-    - zlib
-    - icu
