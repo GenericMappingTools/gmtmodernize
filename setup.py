@@ -1,13 +1,4 @@
 from setuptools import setup, find_packages
-# import versioneer
-
-# VERSIONEER SETUP
-# #############################################################################
-# versioneer.VCS = 'git'
-# versioneer.versionfile_source = 'gmt/_version.py'
-# versioneer.versionfile_build = 'gmt/_version.py'
-# versioneer.tag_prefix = 'v'
-# versioneer.parentdir_prefix = '.'
 
 # PACKAGE METADATA
 # #############################################################################
@@ -18,8 +9,7 @@ AUTHOR = "Leonardo Uieda"
 AUTHOR_EMAIL = 'leouieda@gmail.com'
 MAINTAINER = AUTHOR
 MAINTAINER_EMAIL = AUTHOR_EMAIL
-# VERSION = versioneer.get_version()
-VERSION = '0.1a0'
+VERSION = '0.1a1'
 with open("README.rst") as f:
     LONG_DESCRIPTION = ''.join(f.readlines())
 PACKAGES = find_packages(exclude=['doc', 'ci', 'test', 'example'])
@@ -27,8 +17,9 @@ LICENSE = "BSD License"
 URL = "https://github.com/GenericMappingTools/gmtmodernize"
 PLATFORMS = "Any"
 SCRIPTS = []
-# PACKAGE_DATA = {'': [os.path.join('data', '*')]}
-PACKAGE_DATA = {}
+PACKAGE_DATA = {
+    'gmtmodernize.tests': ['data/classic/*', 'data/modern/*'],
+}
 CLASSIFIERS = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Science/Research",
@@ -66,6 +57,7 @@ if __name__ == '__main__':
           platforms=PLATFORMS,
           scripts=SCRIPTS,
           packages=PACKAGES,
+          package_data=PACKAGE_DATA,
           classifiers=CLASSIFIERS,
           keywords=KEYWORDS,
           install_requires=INSTALL_REQUIRES,
