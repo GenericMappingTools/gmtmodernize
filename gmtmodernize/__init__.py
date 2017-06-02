@@ -3,6 +3,8 @@ Base package for the gmtmodernize program.
 """
 __version__ = '0.1a1'
 
+from .conversion import modernize
+
 
 def test(doctest=True, verbose=True, coverage=False):
     """

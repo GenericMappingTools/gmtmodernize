@@ -4,7 +4,7 @@ Test that the library converts a set of test scripts correctly.
 import os
 import pytest
 
-from ..cli import GMTModernizeApp
+from .. import modernize
 
 
 TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
@@ -19,7 +19,7 @@ def load_test_scripts(path):
     for fname in os.listdir(path):
         if os.path.splitext(fname)[-1] == '.sh' and fname[0] != '~':
             with open(os.path.join(path, fname)) as script:
-                scripts[fname] = script.readlines()
+                scripts[fname] = script.read()
     return scripts
 
 
@@ -43,9 +43,8 @@ def test_integration(classic, modern):
     'Compare converted scripts to a reference of what they should be.'
     assert set(classic.keys()) == set(modern.keys()), \
         'Different number of scripts in classic and modern data dirs'
-    app = GMTModernizeApp(['bla', 'meh', 'foo'])
     for script in classic:
-        modernized = app.modernize(classic[script])
-        assert '\n'.join(modernized) == ''.join(modern[script]), \
-            'Failed {}. Modernized:\n\n{}\n\n'.format(script,
-                                                      '\n'.join(modernized))
+        modernized = modernize(classic[script])
+        assert modernized == modern[script], \
+            'Failed {}.\n\nModernized:\n\n{}\n\nClassic:\n\n{}\n\n'.format(
+                script, modernized, classic[script])
