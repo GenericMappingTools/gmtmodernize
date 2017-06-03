@@ -21,9 +21,9 @@ env:
 
     matrix:
         - PYTHON=3.5 GMT=5.4.1
-        #- PYTHON=3.5 GMT=trunk
+        - PYTHON=3.5 GMT=trunk
         - PYTHON=3.6 GMT=5.4.1 COVERAGE=true
-        #- PYTHON=3.6 GMT=trunk
+        - PYTHON=3.6 GMT=trunk
 
 matrix:
     allow_failures:
@@ -45,6 +45,8 @@ before_install:
     - if [ "$GMT" == "trunk" ]; then conda install --yes --file requirements-gmt.txt -c conda-forge; fi
     # Install gmt from conda-forge or checkout and build trunk (place in conda
     # path)
+    - nc-config --cflags
+    - nc-config --libs
     - if [ "$GMT" == "trunk" ]; then ./ci/install-gmt-trunk.sh; else conda install --yes gmt=$GMT -c conda-forge; fi
     # Show installed pkg information for postmortem diagnostic
     - conda list
