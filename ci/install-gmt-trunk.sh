@@ -5,9 +5,9 @@
 # To return a failure if any commands inside fail
 set -e
 
-LIBPATH=$CONDA_PREFIX
-GMTLIBPATH="$LIBPATH/lib"
-DATADIR="$LIBPATH/share/coast"
+PREFIX=$CONDA_PREFIX
+GMTLIBPATH="$PREFIX/lib"
+DATADIR="$PREFIX/share/coast"
 GMTREPO=gmt-trunk
 CPU_COUNT=`nproc`
 
@@ -40,9 +40,11 @@ if [[ ! -d "$DATADIR" ]]; then
     rm -r $DCW $DCW.$EXT
 fi
 
-export LDFLAGS="$LDFLAGS -L$LIBPATH/lib -Wl,-rpath,$LIBPATH/lib"
+export LDFLAGS="$LDFLAGS -L$PREFIX/lib -Wl,-rpath,$PREFIX/lib"
 
-echo "Installing GMT to $LIBPATH"
+nc-config --libs
+
+echo "Installing GMT to $PREFIX"
 
 if [[ -d "$GMTREPO" ]]; then
     echo ""
@@ -75,13 +77,13 @@ mkdir -p build && cd build
 echo ""
 echo "Running CMAKE"
 echo ""
-cmake -D CMAKE_INSTALL_PREFIX=$LIBPATH \
-      -D FFTW3_ROOT=$LIBPATH \
-      -D GDAL_ROOT=$LIBPATH \
-      -D NETCDF_ROOT=$LIBPATH \
-      -D GMT_LIBDIR=$GMTLIBPATH \
+cmake -D CMAKE_INSTALL_PREFIX=$PREFIX \
+      -D FFTW3_ROOT=$PREFIX \
+      -D GDAL_ROOT=$PREFIX \
+      -D NETCDF_ROOT=$PREFIX \
       -D DCW_ROOT=$DATADIR \
       -D GSHHG_ROOT=$DATADIR \
+      -D GMT_LIBDIR=$GMTLIBPATH \
       ..
 
 echo ""
