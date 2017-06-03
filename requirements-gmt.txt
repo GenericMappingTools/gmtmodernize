@@ -1,4 +1,5 @@
 cmake
+gcc
 fftw
 gdal
 ghostscript
