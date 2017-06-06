@@ -42,8 +42,6 @@ fi
 
 export LDFLAGS="$LDFLAGS -L$PREFIX/lib -Wl,-rpath,$PREFIX/lib"
 
-nc-config --libs
-
 echo "Installing GMT to $PREFIX"
 
 if [[ -d "$GMTREPO" ]]; then
@@ -61,9 +59,11 @@ else
     cd $GMTREPO
 fi
 
-# Turn on modern mode compilation flag
-cp cmake/ConfigUserTemplate.cmake cmake/ConfigUser.cmake
-echo "add_definitions(-DTEST_MODERN)" >> cmake/ConfigUser.cmake
+# Copy custom configuration that enables modern mode.
+cp ../ConfigUser.cmake cmake
+
+# Patch the netCDF finding script to use our given path before using nc-config
+patch cmake/modules/FindNETCDF.cmake -i ../FindNETCDF.patch -o cmake/modules/FindNETCDF.cmake
 
 # Clean the build dir
 if [[ -d build ]]; then
