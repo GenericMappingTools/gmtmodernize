@@ -53,9 +53,10 @@ svn checkout -q svn://gmtserver.soest.hawaii.edu/gmt5/trunk $GMTREPO
 cp ci/ConfigUser.cmake $GMTREPO/cmake
 
 # Patch the netCDF finding script to use our given path before using nc-config
-patch -i ci/FindNETCDF.patch -d $GMTREPO/cmake/modules/
-
+cp ci/FindNETCDF.patch $GMTREPO
 cd $GMTREPO
+patch -i FindNETCDF.patch
+
 
 # Clean the build dir
 if [[ -d build ]]; then

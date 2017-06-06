@@ -1,7 +1,7 @@
-Index: FindNETCDF.cmake
+Index: cmake/modules/FindNETCDF.cmake
 ===================================================================
---- FindNETCDF.cmake	(revision 18324)
-+++ FindNETCDF.cmake	(working copy)
+--- cmake/modules/FindNETCDF.cmake	(revision 18324)
++++ cmake/modules/FindNETCDF.cmake	(working copy)
 @@ -75,11 +75,11 @@
  
  find_path (NETCDF_INCLUDE_DIR netcdf.h
