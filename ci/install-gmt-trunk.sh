@@ -44,26 +44,18 @@ export LDFLAGS="$LDFLAGS -L$PREFIX/lib -Wl,-rpath,$PREFIX/lib"
 
 echo "Installing GMT to $PREFIX"
 
-if [[ -d "$GMTREPO" ]]; then
-    echo ""
-    echo "Update SVN repo"
-    echo ""
-    cd $GMTREPO
-    svn up
-else
-    echo ""
-    echo "Checkout SVN repo"
-    echo ""
-    svn checkout -q svn://gmtserver.soest.hawaii.edu/gmt5/trunk $GMTREPO
-    #svn checkout -q svn://gmtserver.soest.hawaii.edu/gmt5/tags/5.4.1 $GMTREPO
-    cd $GMTREPO
-fi
+echo ""
+echo "Checkout SVN repo"
+echo ""
+svn checkout -q svn://gmtserver.soest.hawaii.edu/gmt5/trunk $GMTREPO
 
 # Copy custom configuration that enables modern mode.
-cp ../ci/ConfigUser.cmake cmake
+cp ci/ConfigUser.cmake $GMTREPO/cmake
 
 # Patch the netCDF finding script to use our given path before using nc-config
-patch -i ../ci/FindNETCDF.patch -d cmake/modules/
+patch -i ci/FindNETCDF.patch -d $GMTREPO/cmake/modules/
+
+cd $GMTREPO
 
 # Clean the build dir
 if [[ -d build ]]; then
