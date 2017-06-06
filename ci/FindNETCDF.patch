@@ -1,12 +1,30 @@
-77a78,79
-> 	$ENV{NETCDF_DIR}
-> 	$ENV{NETCDF_ROOT}
-81,82d82
-< 	$ENV{NETCDF_DIR}
-< 	$ENV{NETCDF_ROOT}
-98a99,100
-> 	$ENV{NETCDF_DIR}
-> 	$ENV{NETCDF_ROOT}
-102,103d103
-< 	$ENV{NETCDF_DIR}
-< 	$ENV{NETCDF_ROOT}
+Index: FindNETCDF.cmake
+===================================================================
+--- FindNETCDF.cmake	(revision 18324)
++++ FindNETCDF.cmake	(working copy)
+@@ -75,11 +75,11 @@
+ 
+ find_path (NETCDF_INCLUDE_DIR netcdf.h
+ 	HINTS
+-	${_netcdf_includepath}
+ 	${NETCDF_DIR}
+ 	${NETCDF_ROOT}
+ 	$ENV{NETCDF_DIR}
+ 	$ENV{NETCDF_ROOT}
++	${_netcdf_includepath}
+ 	PATH_SUFFIXES
+ 	include/netcdf
+ 	include/netcdf-4
+@@ -96,11 +96,11 @@
+ find_library (NETCDF_LIBRARY
+ 	NAMES netcdf
+ 	HINTS
+-	${_netcdf_libpath}
+ 	${NETCDF_DIR}
+ 	${NETCDF_ROOT}
+ 	$ENV{NETCDF_DIR}
+ 	$ENV{NETCDF_ROOT}
++	${_netcdf_libpath}
+ 	PATH_SUFFIXES lib
+ 	PATHS
+ 	/sw

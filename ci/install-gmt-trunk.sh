@@ -63,7 +63,7 @@ fi
 cp ../ci/ConfigUser.cmake cmake
 
 # Patch the netCDF finding script to use our given path before using nc-config
-patch cmake/modules/FindNETCDF.cmake -i ../ci/FindNETCDF.patch -o cmake/modules/FindNETCDF.cmake
+patch -i ../ci/FindNETCDF.patch -d cmake/modules/
 
 # Clean the build dir
 if [[ -d build ]]; then
