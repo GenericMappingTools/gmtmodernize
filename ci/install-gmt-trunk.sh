@@ -60,10 +60,10 @@ else
 fi
 
 # Copy custom configuration that enables modern mode.
-cp ../ConfigUser.cmake cmake
+cp ../ci/ConfigUser.cmake cmake
 
 # Patch the netCDF finding script to use our given path before using nc-config
-patch cmake/modules/FindNETCDF.cmake -i ../FindNETCDF.patch -o cmake/modules/FindNETCDF.cmake
+patch cmake/modules/FindNETCDF.cmake -i ../ci/FindNETCDF.patch -o cmake/modules/FindNETCDF.cmake
 
 # Clean the build dir
 if [[ -d build ]]; then
