@@ -55,7 +55,7 @@ cp ci/ConfigUser.cmake $GMTREPO/cmake
 # Patch the netCDF finding script to use our given path before using nc-config
 cp ci/FindNETCDF.patch $GMTREPO
 cd $GMTREPO
-patch -i FindNETCDF.patch
+patch -t -p0 -i FindNETCDF.patch
 
 
 # Clean the build dir
