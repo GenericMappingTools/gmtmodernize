@@ -19,8 +19,8 @@ This is **work in progress**. So far, it can convert some of the test and
 example scripts from the GMT repository.
 
 
-About
------
+About modern mode
+-----------------
 
 GMT is introducing a "modern" execution mode that reduces the amount of
 arguments needed for many programs and handles the PostScript layer-caking
@@ -69,10 +69,66 @@ Installing
 Using
 -----
 
-The package provides a command-line interface through the ``gmtmodernize`` command::
+Command line
+++++++++++++
 
-    gmtmodernize OLD_SCRIPTS_FOLDER MODERN_SCRIPTS_FOLDER
+The package provides a command-line interface through the ``gmtmodernize``
+program::
 
-The program will crawl through the ``OLD_SCRIPTS_FOLDER`` and convert any ``.sh`` files
-it finds. The directory structure will be mirrored in ``MODER_SCRIPTS_FOLDER``.
-All other files will be copied to ``MODER_SCRIPTS_FOLDER``.
+    $ gmtmodernize --help
+    Convert GMT shell scripts from classic to modern mode.
+
+    Prints the converted modern mode script to standard output (stdout).
+
+    Usage:
+        gmtmodernize SCRIPT
+        gmtmodernize --recursive FOLDER_CLASSIC FOLDER_MODERN
+        gmtmodernize --help
+        gmtmodernize --version
+
+    Arguments:
+        SCRIPT          Classic mode script to convert.
+        FOLDER_CLASSIC  Folder with classic mode scripts (can have multiple
+                        sub-folders).
+        FOLDER_MODERN   Name of output folder with converted modern mode scripts.
+                        Mirrors the folder structure of FOLDER_CLASSIC and copies
+                        all non-script files.
+
+    Options:
+        -r --recursive  Recursively transverse a folder structure with GMT scripts
+                        and other files instead of converting a single file.
+                        Creates a new folder with the same structure and non-script
+                        files copied over, plus the converted GMT scripts.
+        -h --help       Show this help message and exit.
+        --version       Show the version and exit.
+
+    Examples:
+
+        Convert a single GMT script to modern mode:
+
+            $ gmtmodernize classic_script.sh > modern_script.sh
+
+        Convert a folder with GMT scripts, data files, etc, (optionally inside
+        multiple sub-folders):
+
+            $ gmtmodernize -r gmt_classic_scripts/ gmt_modern_scripts/
+
+        This will create a folder 'gmt_modern_scripts' with the same sub-folders
+        and non-script files in 'gmt_classic_scripts' but with the scripts
+        converted to modern mode.
+
+Library
++++++++
+
+Alternatively, you can run the conversion using the ``gmtmodernize`` Python
+library. It exposes a ``modernize`` function that takes a classic script (as a
+single string) and outputs a modern script (also as a single string).
+
+Example::
+
+    from gmtmodernize import modernize
+
+    with open('classic_script.sh') as f:
+        classic = f.read()
+    with open('modern_script.sh', 'w') as f:
+        f.write(modernize(classic))

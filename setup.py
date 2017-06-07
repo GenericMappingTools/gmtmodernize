@@ -38,7 +38,7 @@ ENTRY_POINTS = {
 # DEPENDENCIES
 # #############################################################################
 INSTALL_REQUIRES = [
-    # 'docopt',
+    'docopt',
     # 'tqdm',
 ]
 

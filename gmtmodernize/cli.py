@@ -1,188 +1,80 @@
-"""
-Convert GMT scripts to the new "modern" mode.
+"""Convert GMT shell scripts from classic to modern mode.
 
-$ gmtmodernize old_script_dir modern_scripts_dir
+Prints the converted modern mode script to standard output (stdout).
 
-Will crawl old_script_dir and convert any '*.sh' file to the GMT modern mode.
-Modernized scripts and any other files present will be saved to
-modern_scripts_dir using the same directory tree as the old scripts.
+Usage:
+    gmtmodernize SCRIPT
+    gmtmodernize --recursive FOLDER_CLASSIC FOLDER_MODERN
+    gmtmodernize --help
+    gmtmodernize --version
 
-What it converts:
+Arguments:
+    SCRIPT          Classic mode script to convert.
+    FOLDER_CLASSIC  Folder with classic mode scripts (can have multiple
+                    sub-folders).
+    FOLDER_MODERN   Name of output folder with converted modern mode scripts.
+                    Mirrors the folder structure of FOLDER_CLASSIC and copies
+                    all non-script files.
 
-1. Inserts "gmt set GMT_RUNMODE modern" to the start of the script.
-2. Removes -O -K -R -J (the last two only if alone).
-3. If script defines a variable "ps=somefile.ps", will remove the '.ps' from
-   the variable and insert a "psconvert ... -T$ps" at the end of the script.
-4. Removes any redirection to "> $ps".
+Options:
+    -r --recursive  Recursively transverse a folder structure with GMT scripts
+                    and other files instead of converting a single file.
+                    Creates a new folder with the same structure and non-script
+                    files copied over, plus the converted GMT scripts.
+    -h --help       Show this help message and exit.
+    --version       Show the version and exit.
 
-So far, it only works for the test scripts in the GMT repository or ones that
-follow this rigid format.
+Examples:
+
+    Convert a single GMT script to modern mode:
+
+        $ gmtmodernize classic_script.sh > modern_script.sh
+
+    Convert a folder with GMT scripts, data files, etc, (optionally inside
+    multiple sub-folders):
+
+        $ gmtmodernize -r gmt_classic_scripts/ gmt_modern_scripts/
+
+    This will create a folder 'gmt_modern_scripts' with the same sub-folders
+    and non-script files in 'gmt_classic_scripts' but with the scripts
+    converted to modern mode.
 """
 import os
 import sys
 import shutil
-import re
+from functools import partial
+from docopt import docopt
+
+from . import __version__
+from . import modernize
 
 
-def warn(*args, **kwargs):
+def echo(*args, **kwargs):
     """
     Print message to stderr.
     """
     print(file=sys.stderr, *args, **kwargs)
 
 
-class GMTModernizeApp():
+def main():
     """
-    The application class.
+    Entry point for the command line interface.
     """
+    # Parse the command line arguments
+    args = docopt(__doc__, version=__version__)
 
-    # List of GMT modules that generate Postscript output
-    PS_MODULES = """
-    gmtlogo
-    grdcontour
-    grdimage
-    grdvector
-    grdview
-    psbasemap
-    psclip
-    pscoast
-    pscontour
-    pshistogram
-    psimage
-    pslegend
-    psmask
-    psrose
-    psscale
-    pssolar
-    pstext
-    pswiggle
-    psxyz
-    psxy
-    pscoupe
-    psmeca
-    pspolar
-    pssac
-    psvelo
-    mgd77track
-    pssegyz
-    pssegy
-    """.split()
+    echo = partial(print, file=sys.stderr)
 
-    def __init__(self, args, verbose=False, output_type='ps'):
-        self.verbose = verbose
-        assert output_type in ['pdf', 'ps']
-        self.output_type = output_type
-        assert len(args) >= 3, \
-            'Too few arguments. Provide input dir and output dir'
-        self.input_dir = os.path.normpath(args[1])
-        self.output_dir = os.path.normpath(args[2])
-        if '--quite' in args or '-q' in args:
-            self.verbose = False
-        else:
-            self.verbose = True
-
-    def info(self, *args, **kwargs):
-        """
-        Print message to stderr according to set verbosity.
-        """
-        if self.verbose:
-            print(file=sys.stderr, *args, **kwargs)
-
-    def modernize(self, script):
-        """
-        Given a GMT shell script (as a string), modernize it and return the new
-        text.
-        """
-        modern = []
-        ps_name = None
-        if self.output_type == 'ps':
-            args = '-Tp'
-        elif self.output_type == 'pdf':
-            args = '-Tf -P -A'
-        psconvert = '\ngmt psconvert {} -F$ps\n'.format(args)
-
-        # Copy the header comments and add a command to set the mode
-        # to modern after the header
-        for line in script:
-            line = line.strip()
-            if not line or line[0] != '#':
-                break
-            modern.append(line)
-        last_line = len(modern)
-        modern.append('gmt set GMT_RUNMODE modern')
-
-        # Parse the rest of the script
-        for line in script[last_line:]:
-            line = line.strip()
-
-            # Check if this line defines a .ps file name variable
-            ps_var_def = re.findall(r'^ps=.+\.ps$', line)
-            if ps_var_def:
-                assert len(ps_var_def) == 1, \
-                    "Found more than 1 ps variable in line '{}'".format(line)
-                ps_definition = ps_var_def[0]
-                ps_file_name = ps_definition.split('=')[1]
-                ps_name = os.path.splitext(ps_file_name)[0]
-                line = os.path.splitext(ps_definition)[0]
-
-            # Check if redirecting to the $ps variable and strip it out
-            redirect_to_ps = re.findall(r'.+>+ *\$ps(?: +|$)', line)
-            if redirect_to_ps:
-                assert len(redirect_to_ps) == 1, \
-                    "Found more than 1 ps redirection in line '{}'".format(
-                        line)
-                redirection = re.findall(r'>+ *\$ps(?: +|$)', line)[0]
-                line = line.replace(redirection, '').strip()
-
-            # Remove -O -K -R -J
-            okrj = re.findall(r'(?:(?<= )|^)-[KORJ](?: +|$)', line)
-            if okrj:
-                for match in okrj:
-                    line = line.replace(match, '')
-                line = line.strip()
-
-            modern.append(line)
-
-            # Check if line is deleting gmt.conf. Need to insert the psconvert
-            # before that.
-
-        # Only add a psconvert call if this script defined a ps variable
-        if ps_name is not None:
-            rm_gmt_conf = [i for i, line in enumerate(modern)
-                           if re.findall('(?:(?<= )|^)rm .* gmt.conf(?: +|$)',
-                                         line)]
-            assert len(rm_gmt_conf) <= 1, "Found more than 1 'rm gmt.conf'"
-            if rm_gmt_conf:
-                modern.insert(rm_gmt_conf[0], psconvert)
-                modern.append('')  # Make sure the file ends in a newline
-            else:
-                modern.append(psconvert)
-
-        return modern
-
-    def convert_script(self, old_script, modern_script):
-        """
-        Convert a script file in the old style to the modern style.
-
-        Reads in 'old_script', modernize it, and save the output to
-        'modern_scrip'.
-        """
-        self.info('  Converting:', old_script, ' --> ', modern_script)
-        with open(old_script) as infile:
-            old_content = infile.readlines()
-        modern_content = self.modernize(old_content)
-        with open(modern_script, 'w') as outfile:
-            outfile.write('\n'.join(modern_content))
-
-    def crawl_and_modernize(self, input_dir, output_dir):
-        """
-        Crawl the input dir and copy/modernize the contents to output dir.
-
-        Will copy any file that isn't a shell script (ends in .sh).
-        """
-
+    if args['SCRIPT'] is not None:
+        with open(args['SCRIPT']) as inputfile:
+            classic = inputfile.read()
+        modern = modernize(classic)
+        print(modern)
+    else:
+        input_dir = args['FOLDER_CLASSIC']
+        output_dir = args['FOLDER_MODERN']
         for base, _, files in os.walk(input_dir):
-            self.info('Base dir:', base)
+            echo('Base dir:', base)
             base_output = base.replace(input_dir, output_dir)
             os.mkdir(base_output)
 
@@ -195,22 +87,11 @@ class GMTModernizeApp():
             for script in scripts:
                 modern_script = os.path.join(base_output, script)
                 old_script = os.path.join(base, script)
-                self.convert_script(old_script, modern_script)
 
-    def main(self):
-        """
-        Execute the app to convert the scripts.
-        """
-
-        if os.path.exists(self.output_dir):
-            warn("Aborting: Output directory '{}' already exists.".format(
-                self.output_dir))
-            return 1
-
-        self.crawl_and_modernize(self.input_dir, self.output_dir)
-
-        return 0
-
-
-def main():
-    sys.exit(GMTModernizeApp(sys.argv).main())
+                echo('  Converting:', old_script, ' --> ', modern_script)
+                with open(old_script) as inputfile:
+                    old_content = inputfile.read()
+                modern_content = modernize(old_content)
+                with open(modern_script, 'w') as outputfile:
+                    outputfile.write(modern_content)
+        echo("Done")
