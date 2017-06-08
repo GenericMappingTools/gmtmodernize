@@ -102,8 +102,8 @@ def main():
         output_names = [None]
         save_output = lambda script, fname: print(script)
     else:
-        input_dir = args['FOLDER_CLASSIC']
-        output_dir = args['FOLDER_MODERN']
+        input_dir = os.path.normpath(args['FOLDER_CLASSIC'])
+        output_dir = os.path.normpath(args['FOLDER_MODERN'])
         echo("Scanning '{}' for GMT scripts...".format(input_dir))
         gmt_scripts = find_gmt_scripts(input_dir)
         if len(gmt_scripts) < 1:
