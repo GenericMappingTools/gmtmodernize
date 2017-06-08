@@ -25,7 +25,7 @@ PACKAGE_DATA = {
         'data/mirror_directory/subfolder/*',
         'data/mirror_directory/level1/*',
         'data/mirror_directory/level1/level2/*',
-        ],
+    ],
 }
 CLASSIFIERS = [
     "Development Status :: 3 - Alpha",

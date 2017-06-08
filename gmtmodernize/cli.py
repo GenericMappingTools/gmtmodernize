@@ -93,22 +93,28 @@ def main():
     args = docopt(__doc__, version=__version__)
 
     if args['--quiet'] or not args['--recursive']:
-        echo = lambda *args, **kwargs: None
+
+        def echo(*args, **kwargs):
+            return None
+
     else:
         echo = partial(print, file=sys.stderr)
 
     if args['SCRIPT'] is not None:
         gmt_scripts = [args['SCRIPT']]
         output_names = [None]
-        save_output = lambda script, fname: print(script)
+
+        def save_output(script, fname):
+            print(script)
+
     else:
         input_dir = os.path.normpath(args['FOLDER_CLASSIC'])
         output_dir = os.path.normpath(args['FOLDER_MODERN'])
         echo("Scanning '{}' for GMT scripts...".format(input_dir))
         gmt_scripts = find_gmt_scripts(input_dir)
         if len(gmt_scripts) < 1:
-            raise RuntimeError(
-               "Didn't find any GMT scripts in {}.".format(input_dir))
+            raise RuntimeError("Didn't find any GMT scripts in {}.".format(
+                input_dir))
         else:
             echo("Found {} GMT scripts:".format(len(gmt_scripts)))
             for fname in gmt_scripts:
@@ -120,6 +126,7 @@ def main():
                          ignore=gmt_scripts)
         output_names = [script.replace(input_dir, output_dir)
                         for script in gmt_scripts]
+
         def save_output(script, fname):
             with open(fname, 'w') as outputfile:
                 outputfile.write(script)
