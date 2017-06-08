@@ -1,10 +1,11 @@
 """Convert GMT shell scripts from classic to modern mode.
 
-Prints the converted modern mode script to standard output (stdout).
+Prints the converted modern mode script to standard output (STDOUT) when
+converting a single script.
 
 Usage:
     gmtmodernize SCRIPT
-    gmtmodernize --recursive FOLDER_CLASSIC FOLDER_MODERN
+    gmtmodernize --recursive [--quiet] FOLDER_CLASSIC FOLDER_MODERN
     gmtmodernize --help
     gmtmodernize --version
 
@@ -21,6 +22,7 @@ Options:
                     and other files instead of converting a single file.
                     Creates a new folder with the same structure and non-script
                     files copied over, plus the converted GMT scripts.
+    --quiet         Don't print any text to STDERR while processing.
     -h --help       Show this help message and exit.
     --version       Show the version and exit.
 
@@ -49,49 +51,94 @@ from . import __version__
 from . import modernize
 
 
-def echo(*args, **kwargs):
+def is_gmt_script(fname):
     """
-    Print message to stderr.
+    Check if a given file is a GMT script.
     """
-    print(file=sys.stderr, *args, **kwargs)
+    return os.path.splitext(fname)[-1] == '.sh'
+
+
+def find_gmt_scripts(directory):
+    """
+    Find all GMT scripts in the given directory (including subdirectories).
+    """
+    gmt_scripts = []
+    for base, _, fnames in os.walk(directory):
+        full_fnames = (os.path.join(base, f) for f in fnames)
+        gmt_scripts.extend(f for f in full_fnames if is_gmt_script(f))
+    return gmt_scripts
+
+
+def mirror_directory(original, target, ignore):
+    """
+    Mirror the original directory structure.
+
+    Creates a new 'target' folder and copy all files and subfolders from
+    'original', except the files in the 'ignore' list.
+    """
+    ignore = set(ignore)
+    for base, _, fnames in os.walk(original):
+        base_target = base.replace(original, target)
+        os.mkdir(base_target)
+        to_copy = set(os.path.join(base, f) for f in fnames).difference(ignore)
+        for fname in to_copy:
+            shutil.copy(fname, base_target)
 
 
 def main():
     """
     Entry point for the command line interface.
     """
-    # Parse the command line arguments
     args = docopt(__doc__, version=__version__)
 
-    echo = partial(print, file=sys.stderr)
+    if args['--quiet'] or not args['--recursive']:
+
+        def echo(*args, **kwargs):
+            return None
+
+    else:
+        echo = partial(print, file=sys.stderr)
 
     if args['SCRIPT'] is not None:
-        with open(args['SCRIPT']) as inputfile:
-            classic = inputfile.read()
-        modern = modernize(classic)
-        print(modern)
+        gmt_scripts = [args['SCRIPT']]
+        output_names = [None]
+
+        def save_output(script, fname):
+            print(script)
+
     else:
-        input_dir = args['FOLDER_CLASSIC']
-        output_dir = args['FOLDER_MODERN']
-        for base, _, files in os.walk(input_dir):
-            echo('Base dir:', base)
-            base_output = base.replace(input_dir, output_dir)
-            os.mkdir(base_output)
+        input_dir = os.path.normpath(args['FOLDER_CLASSIC'])
+        output_dir = os.path.normpath(args['FOLDER_MODERN'])
 
-            scripts = set(f for f in files if os.path.splitext(f)[-1] == '.sh')
-            not_scripts = set(files).difference(scripts)
+        echo("Scanning '{}' for GMT scripts...".format(input_dir))
+        gmt_scripts = find_gmt_scripts(input_dir)
+        if len(gmt_scripts) < 1:
+            raise RuntimeError("Didn't find any GMT scripts in '{}'.".format(
+                input_dir))
+        else:
+            echo("Found {} GMT scripts:".format(len(gmt_scripts)))
+            for fname in gmt_scripts:
+                echo("  {}".format(fname))
 
-            for file in not_scripts:
-                shutil.copy(os.path.join(base, file), base_output)
+        echo("Copying folder structure and non-script files to '{}'.".format(
+            output_dir))
+        mirror_directory(original=input_dir,
+                         target=output_dir,
+                         ignore=gmt_scripts)
 
-            for script in scripts:
-                modern_script = os.path.join(base_output, script)
-                old_script = os.path.join(base, script)
+        output_names = [script.replace(input_dir, output_dir)
+                        for script in gmt_scripts]
 
-                echo('  Converting:', old_script, ' --> ', modern_script)
-                with open(old_script) as inputfile:
-                    old_content = inputfile.read()
-                modern_content = modernize(old_content)
-                with open(modern_script, 'w') as outputfile:
-                    outputfile.write(modern_content)
-        echo("Done")
+        def save_output(script, fname):
+            with open(fname, 'w') as outputfile:
+                outputfile.write(script)
+
+    echo("Converting scripts to modern mode:")
+    for script, fname in zip(gmt_scripts, output_names):
+        with open(script) as inputfile:
+            classic_script = inputfile.read()
+        modern_script = modernize(classic_script)
+        save_output(modern_script, fname)
+        echo('  {}'.format(fname))
+
+    echo("Done")
