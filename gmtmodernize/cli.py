@@ -89,7 +89,6 @@ def main():
     """
     Entry point for the command line interface.
     """
-    # Parse the command line arguments
     args = docopt(__doc__, version=__version__)
 
     if args['--quiet'] or not args['--recursive']:
@@ -110,20 +109,23 @@ def main():
     else:
         input_dir = os.path.normpath(args['FOLDER_CLASSIC'])
         output_dir = os.path.normpath(args['FOLDER_MODERN'])
+
         echo("Scanning '{}' for GMT scripts...".format(input_dir))
         gmt_scripts = find_gmt_scripts(input_dir)
         if len(gmt_scripts) < 1:
-            raise RuntimeError("Didn't find any GMT scripts in {}.".format(
+            raise RuntimeError("Didn't find any GMT scripts in '{}'.".format(
                 input_dir))
         else:
             echo("Found {} GMT scripts:".format(len(gmt_scripts)))
             for fname in gmt_scripts:
                 echo("  {}".format(fname))
+
         echo("Copying folder structure and non-script files to '{}'.".format(
             output_dir))
         mirror_directory(original=input_dir,
                          target=output_dir,
                          ignore=gmt_scripts)
+
         output_names = [script.replace(input_dir, output_dir)
                         for script in gmt_scripts]
 
@@ -138,4 +140,5 @@ def main():
         modern_script = modernize(classic_script)
         save_output(modern_script, fname)
         echo('  {}'.format(fname))
+
     echo("Done")
