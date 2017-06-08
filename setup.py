@@ -18,7 +18,14 @@ URL = "https://github.com/GenericMappingTools/gmtmodernize"
 PLATFORMS = "Any"
 SCRIPTS = []
 PACKAGE_DATA = {
-    'gmtmodernize.tests': ['data/classic/*', 'data/modern/*'],
+    'gmtmodernize.tests': [
+        'data/classic/*',
+        'data/modern/*',
+        'data/mirror_directory/*',
+        'data/mirror_directory/subfolder/*',
+        'data/mirror_directory/level1/*',
+        'data/mirror_directory/level1/level2/*',
+        ],
 }
 CLASSIFIERS = [
     "Development Status :: 3 - Alpha",

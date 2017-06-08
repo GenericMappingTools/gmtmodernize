@@ -1,4 +1,4 @@
 include LICENSE.txt
 include README.rst
 include versioneer.py
-recursive-include gmtmodernize *.sh
+recursive-include gmtmodernize/tests/data *
