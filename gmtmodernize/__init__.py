@@ -1,9 +1,12 @@
 """
 Base package for the gmtmodernize program.
 """
-__version__ = '0.1a1'
-
+from ._version import get_versions
 from .conversion import modernize
+
+
+__version__ = get_versions()['version']
+del get_versions
 
 
 def test(doctest=True, verbose=True, coverage=False):

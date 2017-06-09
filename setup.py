@@ -1,4 +1,5 @@
 from setuptools import setup, find_packages
+import versioneer
 
 # PACKAGE METADATA
 # #############################################################################
@@ -9,7 +10,8 @@ AUTHOR = "Leonardo Uieda"
 AUTHOR_EMAIL = 'leouieda@gmail.com'
 MAINTAINER = AUTHOR
 MAINTAINER_EMAIL = AUTHOR_EMAIL
-VERSION = '0.1a1'
+VERSION = versioneer.get_version()
+CMDCLASS = versioneer.get_cmdclass()
 with open("README.rst") as f:
     LONG_DESCRIPTION = ''.join(f.readlines())
 PACKAGES = find_packages(exclude=['doc', 'ci', 'test', 'example'])
@@ -68,4 +70,5 @@ if __name__ == '__main__':
           classifiers=CLASSIFIERS,
           keywords=KEYWORDS,
           install_requires=INSTALL_REQUIRES,
+          cmdclass=CMDCLASS,
           entry_points=ENTRY_POINTS)

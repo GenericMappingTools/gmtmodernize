@@ -2,3 +2,4 @@ include LICENSE.txt
 include README.rst
 include versioneer.py
 recursive-include gmtmodernize/tests/data *
+include gmtmodernize/_version.py
