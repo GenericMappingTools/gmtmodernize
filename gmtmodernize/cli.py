@@ -109,7 +109,9 @@ def main():
     else:
         input_dir = os.path.normpath(args['FOLDER_CLASSIC'])
         output_dir = os.path.normpath(args['FOLDER_MODERN'])
-
+        if os.path.exists(output_dir):
+            raise RuntimeError("Target directory '{}' already exists.".format(
+                output_dir))
         echo("Scanning '{}' for GMT scripts...".format(input_dir))
         gmt_scripts = find_gmt_scripts(input_dir)
         if len(gmt_scripts) < 1:
