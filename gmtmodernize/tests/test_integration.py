@@ -46,5 +46,5 @@ def test_integration(classic, modern):
     for script in classic:
         modernized = modernize(classic[script])
         assert modernized == modern[script], \
-            'Failed {}.\n\nModernized:\n\n{}\n\nClassic:\n\n{}\n\n'.format(
-                script, modernized, classic[script])
+            'Failed {}.\n\nModernized:\n\n{}\n\nExpected:\n\n{}\n\n'.format(
+                script, modernized, modern[script])

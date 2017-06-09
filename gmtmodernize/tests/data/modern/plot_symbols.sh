@@ -2,7 +2,7 @@
 #	$Id: plot_symbols.sh 17436 2017-01-13 00:22:07Z pwessel $
 #
 # Plot all the symbols on a 1x1 inch grid pattern
-gmt set GMT_RUNMODE modern
+gmt begin
 
 ps=plot_symbols
 
@@ -42,3 +42,4 @@ EOF
 
 
 gmt psconvert -Tp -F$ps
+gmt end
