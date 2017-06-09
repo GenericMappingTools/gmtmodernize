@@ -5,4 +5,10 @@ ghostscript
 libnetcdf
 hdf5
 zlib
+blas
 icu
+curl
+pkg-config
+glib
+pcre
+netcdf4

@@ -6,21 +6,19 @@
 set -e
 
 PREFIX=$CONDA_PREFIX
-GMTLIBPATH="$PREFIX/lib"
-DATADIR="$PREFIX/share/coast"
-GMTREPO=gmt-trunk
-CPU_COUNT=`nproc`
+DATA_PREFIX="$PREFIX/share/coast"
+REPO=gmt-trunk
 
 echo ""
-echo "Installing GMT from source to $GMTLIBPATH"
-echo ""
+echo "Installing GMT from source to $PREFIX"
+echo "----------------------------------------------------"
 
 # Download coastline data if it's not yet present
-if [[ ! -d "$DATADIR" ]]; then
-    echo ""
-    echo "Downloading coastline data to $DATADIR"
-    echo ""
-    mkdir $DATADIR
+if [[ ! -d "$DATA_PREFIX" ]]; then
+    echo "Downloading coastline data to $DATA_PREFIX"
+    echo "----------------------------------------------------"
+
+    mkdir $DATA_PREFIX
 
     # GSHHG (coastlines, rivers, and political boundaries):
     EXT="tar.gz"
@@ -28,7 +26,7 @@ if [[ ! -d "$DATADIR" ]]; then
     URL="ftp://ftp.soest.hawaii.edu/gmt/$GSHHG.$EXT"
     curl $URL > $GSHHG.$EXT
     tar xzf $GSHHG.$EXT
-    cp $GSHHG/* $DATADIR/
+    cp $GSHHG/* $DATA_PREFIX/
     rm -r $GSHHG $GSHHG.$EXT
 
     # DCW (country polygons):
@@ -36,53 +34,42 @@ if [[ ! -d "$DATADIR" ]]; then
     URL="ftp://ftp.soest.hawaii.edu/gmt/$DCW.$EXT"
     curl $URL > $DCW.$EXT
     tar xzf $DCW.$EXT
-    cp $DCW/* $DATADIR
+    cp $DCW/* $DATA_PREFIX
     rm -r $DCW $DCW.$EXT
 fi
 
-export LDFLAGS="$LDFLAGS -L$PREFIX/lib -Wl,-rpath,$PREFIX/lib"
-
-echo "Installing GMT to $PREFIX"
-
 echo ""
-echo "Checkout SVN repo"
-echo ""
-svn checkout -q svn://gmtserver.soest.hawaii.edu/gmt5/trunk $GMTREPO
+echo "Checkout the SVN repo"
+echo "----------------------------------------------------"
+svn checkout -q svn://gmtserver.soest.hawaii.edu/gmt5/trunk $REPO
 
-# Copy custom configuration that enables modern mode.
-cp ci/ConfigUser.cmake $GMTREPO/cmake
+cd $REPO
 
-# Patch the netCDF finding script to use our given path before using nc-config
-cp ci/FindNETCDF.patch $GMTREPO
-cd $GMTREPO
-patch -t -p0 -i FindNETCDF.patch
+cp cmake/ConfigUserTemplate.cmake cmake/ConfigUser.cmake
 
+# Turn on modern mode compilation flag
+echo "add_definitions(-DTEST_MODERN)" >> cmake/ConfigUser.cmake
 
 # Clean the build dir
 if [[ -d build ]]; then
-    echo ""
-    echo "Remove build dir"
     rm -r build
 fi
 
 mkdir -p build && cd build
 
-echo ""
-echo "Running CMAKE"
-echo ""
 cmake -D CMAKE_INSTALL_PREFIX=$PREFIX \
-      -D FFTW3_ROOT=$PREFIX \
-      -D GDAL_ROOT=$PREFIX \
-      -D NETCDF_ROOT=$PREFIX \
-      -D DCW_ROOT=$DATADIR \
-      -D GSHHG_ROOT=$DATADIR \
-      -D GMT_LIBDIR=$GMTLIBPATH \
+      -D GDAL_ROOT=$CONDA_PREFIX \
+      -D NETCDF_ROOT=$CONDA_PREFIX \
+      -D PCRE_ROOT=$CONDA_PREFIX \
+      -D FFTW3_ROOT=$CONDA_PREFIX \
+      -D ZLIB_ROOT=$CONDA_PREFIX \
+      -D DCW_ROOT=$DATA_PREFIX \
+      -D GSHHG_ROOT=$DATA_PREFIX \
       ..
-
 echo ""
 echo "Build and install"
-echo ""
-make -j$CPU_COUNT && make install
+echo "----------------------------------------------------"
+make -j`nproc` && make install
 
 # Workaround for https://github.com/travis-ci/travis-ci/issues/6522
 # Turn off exit on failure.
