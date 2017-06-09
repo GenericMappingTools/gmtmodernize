@@ -1,5 +1,3 @@
-language: generic
-
 sudo: false
 
 notifications:
@@ -11,23 +9,26 @@ branches:
     only:
         - master
 
+language: python
+
 os:
     - linux
+
+matrix:
+    include:
+        - python: '3.4'
+          env: GMT=5.4.1
+        - python: '3.5'
+          env: GMT=5.4.1
+        #- python: '3.6'
+          #env: GMT=trunk
+        - python: '3.6'
+          env: GMT=5.4.1 COVERAGE=true
 
 env:
     global:
         - COVERAGE=false
         - CONDA_PREFIX=/home/travis/miniconda3
-
-    matrix:
-        - PYTHON=3.5 GMT=5.4.1
-        #- PYTHON=3.5 GMT=trunk
-        - PYTHON=3.6 GMT=5.4.1 COVERAGE=true
-        #- PYTHON=3.6 GMT=trunk
-
-matrix:
-    allow_failures:
-        - env: GMT=trunk
 
 before_install:
     # Get Miniconda from Continuum
@@ -42,17 +43,17 @@ before_install:
     # Install dependencies
     - conda install --yes --file requirements.txt -c conda-forge
     - if [ "$COVERAGE" == "true" ]; then pip install coveralls==0.5; fi
-    - if [ "$GMT" == "trunk" ]; then conda install --yes --file requirements-gmt.txt -c conda-forge; fi
+    #- if [ "$GMT" == "trunk" ]; then conda install --yes --file requirements-gmt.txt -c conda-forge; fi
     # Install gmt from conda-forge or checkout and build trunk (place in conda
     # path)
-    - if [ "$GMT" == "trunk" ]; then ./ci/install-gmt-trunk.sh; else conda install --yes gmt=$GMT -c conda-forge; fi
+    #- if [ "$GMT" == "trunk" ]; then ./ci/install-gmt-trunk.sh; else conda install --yes gmt=$GMT -c conda-forge; fi
     # Show installed pkg information for postmortem diagnostic
     - conda list
 
 install:
     # Package and install
-    - python setup.py sdist --formats=gztar
-    - pip install dist/*.tar.gz
+    - python setup.py bdist_wheel
+    - pip install dist/*
 
 script:
     # Run the test suite
