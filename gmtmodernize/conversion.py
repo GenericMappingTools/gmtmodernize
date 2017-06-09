@@ -57,7 +57,7 @@ def modernize(script):
     """
     modern = []
     ps_name = None
-    psconvert = '\ngmt psconvert -Tp -F$ps\n'
+    psconvert = '\ngmt psconvert -Tp -F$ps'
     script = script.split('\n')[:-1]
 
     # Copy the header comments and add a command to set the mode
@@ -68,7 +68,7 @@ def modernize(script):
             break
         modern.append(line)
     last_line = len(modern)
-    modern.append('gmt set GMT_RUNMODE modern')
+    modern.append('gmt begin')
 
     # Parse the rest of the script
     for line in script[last_line:]:
@@ -116,5 +116,7 @@ def modernize(script):
             modern.append('')  # Make sure the file ends in a newline
         else:
             modern.append(psconvert)
+
+    modern.append('gmt end\n')
 
     return '\n'.join(modern)
