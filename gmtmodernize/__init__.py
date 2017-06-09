@@ -34,7 +34,7 @@ def test(doctest=True, verbose=True, coverage=False):
     import pytest
     args = []
     if verbose:
-        args.append('-v')
+        args.append('-vv')
     if coverage:
         args.append('--cov=gmtmodernize')
         args.append('--cov-report=term-missing')

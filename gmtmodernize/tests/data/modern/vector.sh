@@ -2,7 +2,7 @@
 #       $Id: vector.sh 13579 2014-10-02 20:35:47Z pwessel $
 #
 # Check vector symbols
-gmt set GMT_RUNMODE modern
+gmt begin
 
 ps=vector
 
@@ -68,3 +68,4 @@ EOF
 
 
 gmt psconvert -Tp -F$ps
+gmt end
