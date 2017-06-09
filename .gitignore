@@ -10,3 +10,4 @@ gmt-trunk
 .cache
 .coverage
 example/*.pdf
+build

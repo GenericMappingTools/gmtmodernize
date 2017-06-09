@@ -10,6 +10,9 @@ gmtmodernize: Convert GMT5 scripts to the "modern" execution mode
 .. image:: http://img.shields.io/coveralls/GenericMappingTools/gmtmodernize/master.svg?style=flat-square
     :alt: Test coverage status
     :target: https://coveralls.io/r/GenericMappingTools/gmtmodernize?branch=master
+.. image:: https://img.shields.io/pypi/pyversions/gmtmodernize.svg?style=flat-square
+    :alt: Compatible Python versions.
+    :target: https://pypi.python.org/pypi/gmtmodernize
 
 
 Disclaimer
@@ -132,3 +135,11 @@ Example::
         classic = f.read()
     with open('modern_script.sh', 'w') as f:
         f.write(modernize(classic))
+
+
+License
+-------
+
+gmtmodernize is free software: you can redistribute it and/or modify it
+under the terms of the **BSD 3-clause License**. A copy of this license is
+provided in ``LICENSE.txt``.
