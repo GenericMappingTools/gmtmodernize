@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 #	$Id: grdcontour.sh 12114 2013-09-03 19:19:00Z fwobbe $
-gmt set GMT_RUNMODE modern
+gmt begin
 
 ps=grdcontour
 
@@ -20,3 +20,4 @@ echo 900 C >> cont.dat
 gmt grdcontour -Ccont.dat xz-temp.nc -Jx -R-100/-60/3/20 -Ba5f1 -BWNse -Gd4 -Wathin,grey -Wcdefault,grey -Y9c
 
 gmt psconvert -Tp -F$ps
+gmt end
