@@ -21,9 +21,9 @@ env:
 
     matrix:
         - PYTHON=3.5 GMT=5.4.1
-        #- PYTHON=3.5 GMT=trunk
+        - PYTHON=3.5 GMT=trunk
         - PYTHON=3.6 GMT=5.4.1 COVERAGE=true
-        #- PYTHON=3.6 GMT=trunk
+        - PYTHON=3.6 GMT=trunk
 
 matrix:
     allow_failures:
