@@ -6,7 +6,6 @@ notifications:
 branches:
     only:
         - master
-        - deploy
 
 language: python
 
@@ -54,7 +53,6 @@ deploy:
     password:
         secure: KyVpqvLNGp+IXjKmqQR4ll43dSDNdqcJnP+7PmPCVOt+bRfjb6WmK6iATD5x8Yij4skt7olsE2dGk6mBbSjhJaaSK6zYxGMpSRs14IOOeKdj61v+1TuAKYq2A4ZO74he6kJRrM3yzZNyeg2WGAjCApMli7VGBizC/kxzWlsfpnBgrywOXDaDCxBSVhVssWpdfuhyHHbJCExhDw52gzErPkmLVzZpLzMTU4WSVO/BWytexvK3adtMURH+SCAvjFeBCpos0HF58rPdlyxOmczAmWGyROcDZ+BfshJy7L3v96fRoOWmONgJsKOHQQCnc8CrijI9A+MQrgzr5vifv2twutZfQGXe/TlhnUrJz7me05TYDTp9Gdopm3jAR1M2KRehLNnYEtni7t+21H3BXQfNinW7hrYXEp/2GPijJLOVRpgX4usvvnGgHnFVpTep+dTSA5TpOf1EEix0+zc6/o/bEwLKYUsQGMLAkcL64gzfNC/dVSH4c4OFvJZ+t7vIDTuk50ISvuvyROTFzhox2qWMJcC8DBb/TziJw1bESJ6g5MRNE3M6cIoGdn5zQ771YZrWn/Ij3RCRGsJ8fTu0agHKtpCyiePgM9OwQTG91P5s+KzrX6J8JnQHFO02sacemCHBLd6HAmglxtssWPTrqAG04nhmHba3ujjiWAb95Q154qE=
     on:
-        #tags: true
-        branch: deploy
+        tags: true
+        branch: master
         python: '3.6'
-    server: https://testpypi.python.org/pypi
