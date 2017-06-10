@@ -3,8 +3,6 @@ sudo: false
 notifications:
     email: false
 
-# Only build pushes from the master branch. PRs are always built. The master
-# build will also push the newly built docs to fatiando.org/dev
 branches:
     only:
         - master
@@ -21,8 +19,6 @@ matrix:
           env: GMT=5.4.1
         - python: '3.5'
           env: GMT=5.4.1
-        #- python: '3.6'
-          #env: GMT=trunk
         - python: '3.6'
           env: GMT=5.4.1 COVERAGE=true
 
@@ -32,34 +28,19 @@ env:
         - CONDA_PREFIX=/home/travis/miniconda3
 
 before_install:
-    # Get Miniconda from Continuum
-    # Need to source the script to set the PATH variable in this environment
-    # (not the scripts environment)
     - source ci/install-miniconda.sh
-    # Create a conda env to install required libraries
     - conda update --yes conda
-    #- conda create -n testenv --yes pip python=$PYTHON
-    #- source activate testenv
     - conda install --yes python=$TRAVIS_PYTHON_VERSION pip -c conda-forge
-    # Install dependencies
     - conda install --yes --file requirements.txt -c conda-forge
     - if [ "$COVERAGE" == "true" ]; then pip install coveralls==0.5; fi
-    #- if [ "$GMT" == "trunk" ]; then conda install --yes --file requirements-gmt.txt -c conda-forge; fi
-    # Install gmt from conda-forge or checkout and build trunk (place in conda
-    # path)
-    #- if [ "$GMT" == "trunk" ]; then ./ci/install-gmt-trunk.sh; else conda install --yes gmt=$GMT -c conda-forge; fi
-    # Show installed pkg information for postmortem diagnostic
     - conda list
 
 install:
-    # Package and install
     - python setup.py bdist_wheel
     - pip install dist/*
 
 script:
-    # Run the test suite
     - if [ "$COVERAGE" == "true" ]; then make coverage; else make test; fi
-    # Check code for PEP8 style
     - make pep8
 
 after_success:
@@ -67,14 +48,13 @@ after_success:
 
 deploy:
     provider: pypi
-    distributions: "sdist bdist_wheel"
+    distributions: "dist bdist_wheel"
     skip_upload_docs: true
     user: "Leonardo.Uieda"
     password:
-        secure: "XUxWsjXecsJ9jAw6PZN5CxP7qioDqxWa7d87N8GETS1JP9JV7iUHQWTzM3rgoVHX7w6NvFhFMrt8L/ARWccTHn9ERzy4St9IDzEbLaZudIId3O5Ehky/SDgyM+8dDJOcl0AKFoMItRJjcA1Ma7FCM7WqL1qfaAI7RDlfwpUkVeeE9b0D7yyGURaEhB/35kKjnDoSzwpo0A5N4Y9JKHr3XDrzfM9LkAoR7jC6LmLT7L6NVYF2G5KeCEL1sqDBsByBl0SubqRCOGfXzmAx2DtUtW0S2eU3GQDuj/0B3K47IqE1gefzag17fnf+FgdbHMM/HIw7E+8YQfcq9uZDK7d4LqHoesMbMzkau4pvBwaPIkazK1i4yBBySqt95EO4Og8zaj7aOTjYx51WFo+zGxG0GmVqkjT6HV6WNs0S5cZ2Sn8vnMye242r08/6QqT57i7tvKIYRguIcWdzx6rC16/plSUOFFTd0YolW/7zr3S0iNnpQtnIbYHNDLH7f5Dnj4IrzxnpJeE4fB8dtOiWZSVX/v1IrrJJifIMnLpTVfvHk8lVQIP5nK5s9Vb11ZCUGg9fWeyUhw/NggC43x1xot2aEXejmUXNse3hI94DfMWpQIrUqch3WnGPxfhYTVhNCKeh87RR7FYeeGAEES/z2jLqCo0hIg5x8VsT+nyqiqCE1oU="
+        secure: KyVpqvLNGp+IXjKmqQR4ll43dSDNdqcJnP+7PmPCVOt+bRfjb6WmK6iATD5x8Yij4skt7olsE2dGk6mBbSjhJaaSK6zYxGMpSRs14IOOeKdj61v+1TuAKYq2A4ZO74he6kJRrM3yzZNyeg2WGAjCApMli7VGBizC/kxzWlsfpnBgrywOXDaDCxBSVhVssWpdfuhyHHbJCExhDw52gzErPkmLVzZpLzMTU4WSVO/BWytexvK3adtMURH+SCAvjFeBCpos0HF58rPdlyxOmczAmWGyROcDZ+BfshJy7L3v96fRoOWmONgJsKOHQQCnc8CrijI9A+MQrgzr5vifv2twutZfQGXe/TlhnUrJz7me05TYDTp9Gdopm3jAR1M2KRehLNnYEtni7t+21H3BXQfNinW7hrYXEp/2GPijJLOVRpgX4usvvnGgHnFVpTep+dTSA5TpOf1EEix0+zc6/o/bEwLKYUsQGMLAkcL64gzfNC/dVSH4c4OFvJZ+t7vIDTuk50ISvuvyROTFzhox2qWMJcC8DBb/TziJw1bESJ6g5MRNE3M6cIoGdn5zQ771YZrWn/Ij3RCRGsJ8fTu0agHKtpCyiePgM9OwQTG91P5s+KzrX6J8JnQHFO02sacemCHBLd6HAmglxtssWPTrqAG04nhmHba3ujjiWAb95Q154qE=
     on:
         #tags: true
-        #branch: master
         branch: deploy
-        python: "3.6"
+        python: '3.6'
     server: https://testpypi.python.org/pypi
