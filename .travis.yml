@@ -8,6 +8,7 @@ notifications:
 branches:
     only:
         - master
+        - deploy
 
 language: python
 
@@ -70,7 +71,9 @@ deploy:
     user: "Leonardo.Uieda"
     password:
         secure: "LQwtdLef4DtFg8WqlP4fZTomZOILtTBU6HQBjSaJk4Hy2QzeHVjVbCUPCSAZBVO2Qrz2TGrnnWoc5JxxRzxVf9MAdKrzMKWabsEmt14HnlaZt2nDF7lumLD9UO8Cwx3YyVBK6CvYJxdIlxWg3H3BvSnZ89A8SJl6G75/fwH2a3v8tOqt/5iFPc9SK6HTTCCTqKZNgIYqSH2OhK2bW9fjRSRSWQa+8wyNlKbTc958npB9pjrlHhxphnJhUQ1/orH2hJH0if74nxqQz/tfphkkeJfO1aPcwgiGR+VszdXM5/sz03RoGZKTRBQBqooAMz1X2c9O5uVhWXeXLX34dl9PvFMZtkXIdl2+zpH+3CUWrc8c/QyrX92fizxsHcmjpXeTWUhtE66A/sKTAR34gFUkVAEotrHzy0VuWlgjeLs6nAsp29/sqM8/Vfj+RgaAid+vgorZKDl8d+X23OHwwN94eVH1zPCM88Ag/PkhP3wqFMktpAbgPxiTVbEMTKV3s/K8Yb5I4Lh0AoeBZmW4LGSE9M60Ah/KxbqtecQq6td5gjquNH1+SpQ1/FYdfolf8xOghIWK+eo9+5xlC8WuYdgFwBER5c8A0yh3PJQIPvtPYIRCN5IJ8JgSuH+uKgOtEFFLK2nrlQSYz6Zk46ZxRAES4yzZxP4ciBuXwgZFrpFObFI="
-    #on:
+    on:
         #tags: true
         #branch: master
+        branch: deploy
+        python: "3.6"
     server: https://testpypi.python.org/pypi
