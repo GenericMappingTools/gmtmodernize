@@ -2,9 +2,11 @@
 #       $Id: wedges.sh 16367 2016-05-05 01:55:00Z pwessel $
 #
 # Check wedges and geowedges
-gmt begin
 
 ps=wedges
+
+gmt begin $ps ps
+
 gmt gmtset PROJ_ELLIPSOID Sphere
 
 # Cartesian
@@ -27,5 +29,4 @@ echo -50 -30 50 110  | gmt psxy -SW30d+r -W2p
 echo -10 80 -60 240  | gmt psxy -SW20d -W2p -Gyellow
 gmt psxy -T
 
-gmt psconvert -Tp -F$ps
 gmt end

@@ -2,9 +2,10 @@
 #       $Id: vector.sh 13579 2014-10-02 20:35:47Z pwessel $
 #
 # Check vector symbols
-gmt begin
 
 ps=vector
+
+gmt begin $ps ps
 
 gmt psbasemap -R0/6/0/3 -Jx1i -P -B1g1 -BWSne -Xc
 gmt gmtset MAP_VECTOR_SHAPE 0.5
@@ -66,6 +67,4 @@ gmt psxy -W1p -S << EOF
 5.9	2.8	60	1i	V0.2i+je+er
 EOF
 
-
-gmt psconvert -Tp -F$ps
 gmt end
