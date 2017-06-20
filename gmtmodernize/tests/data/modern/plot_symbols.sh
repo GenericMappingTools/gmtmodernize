@@ -2,9 +2,10 @@
 #	$Id: plot_symbols.sh 17436 2017-01-13 00:22:07Z pwessel $
 #
 # Plot all the symbols on a 1x1 inch grid pattern
-gmt begin
 
 ps=plot_symbols
+
+gmt begin $ps ps
 
 gmt psxy -R0/4/1/6 -Jx1i -P -Bg1 -Gred -W0.25p -S1i -X2i -Y2i << EOF
 > Fat pen -W2p
@@ -40,6 +41,4 @@ gmt psxy -R0/4/1/6 -Jx1i -P -Bg1 -Gred -W0.25p -S1i -X2i -Y2i << EOF
 3.5	1.5	a
 EOF
 
-
-gmt psconvert -Tp -F$ps
 gmt end

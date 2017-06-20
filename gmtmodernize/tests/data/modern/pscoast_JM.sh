@@ -2,11 +2,11 @@
 #
 #	$Id: pscoast_JM.sh 11490 2013-05-16 06:26:21Z pwessel $
 # Make sure when fixed it works for all resolutions -D?
-gmt begin
 
 ps=pscoast_JM
 
+gmt begin $ps ps
+
 gmt pscoast -R90/290/-70/65 -JM6i -P -Ggray -Baf
 
-gmt psconvert -Tp -F$ps
 gmt end

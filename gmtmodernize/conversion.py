@@ -56,8 +56,6 @@ def modernize(script):
 
     """
     modern = []
-    ps_name = None
-    psconvert = '\ngmt psconvert -Tp -F$ps'
     script = script.split('\n')[:-1]
 
     # Copy the header comments and add a command to set the mode
@@ -68,21 +66,30 @@ def modernize(script):
             break
         modern.append(line)
     last_line = len(modern)
-    modern.append('gmt begin')
 
-    # Parse the rest of the script
-    for line in script[last_line:]:
+    # Look for the "ps" variable definition and extract the name
+    for l, line in enumerate(script[last_line:]):
         line = line.strip()
-
         # Check if this line defines a .ps file name variable
         ps_var_def = re.findall(r'^ps=.+\.ps$', line)
         if ps_var_def:
             assert len(ps_var_def) == 1, \
                 "Found more than 1 ps variable in line '{}'".format(line)
             ps_definition = ps_var_def[0]
-            ps_file_name = ps_definition.split('=')[1]
-            ps_name = os.path.splitext(ps_file_name)[0]
             line = os.path.splitext(ps_definition)[0]
+            modern.append('')
+            modern.append(line)
+            ps_var_line = last_line + l
+            break
+    script.pop(ps_var_line)
+
+    modern.append('')
+    modern.append('gmt begin $ps ps')
+    modern.append('')
+
+    # Parse the rest of the script
+    for line in script[last_line:]:
+        line = line.strip()
 
         # Check if redirecting to the $ps variable and strip it out
         redirect_to_ps = re.findall(r'.+>+ *\$ps(?: +|$)', line)
@@ -102,21 +109,12 @@ def modernize(script):
 
         modern.append(line)
 
-        # Check if line is deleting gmt.conf. Need to insert the psconvert
-        # before that.
+    modern.append('')
+    modern.append('gmt end')
+    modern.append('')
 
-    # Only add a psconvert call if this script defined a ps variable
-    if ps_name is not None:
-        rm_gmt_conf = [i for i, line in enumerate(modern)
-                       if re.findall('(?:(?<= )|^)rm .* gmt.conf(?: +|$)',
-                                     line)]
-        assert len(rm_gmt_conf) <= 1, "Found more than 1 'rm gmt.conf'"
-        if rm_gmt_conf:
-            modern.insert(rm_gmt_conf[0], psconvert)
-            modern.append('')  # Make sure the file ends in a newline
-        else:
-            modern.append(psconvert)
-
-    modern.append('gmt end\n')
+    # Remove duplicate blank lines
+    modern = [line for l, line in enumerate(modern)
+              if l == 0 or not (line == '' and modern[l - 1] == '')]
 
     return '\n'.join(modern)

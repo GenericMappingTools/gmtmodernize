@@ -31,34 +31,36 @@ in the background.
 
 For example, the following classic mode script::
 
+    ps=map.ps
     gmt grdgradient -Nt0.2 -A45 data.nc -Gintens.nc
     gmt makecpt -Cgeo -T-8000/2000 > t.cpt
-    gmt grdimage -Ct.cpt -Iintens.nc data.nc -JM6i -P -K > classic_map.ps
-    gmt pscoast -Rdata.nc -J -O -Dh -Baf -W0.75p -K >> classic_map.ps
-    echo "Japan Trench" | gmt pstext -F+f32p+cTC -Dj0/0.2i -Gwhite -R -J -O -K >> classic_map.ps
-    gmt psxy -W2p lines.txt -R -J -O -K >> classic_map.ps
-    gmt psscale -R -J -O -DjBL+w3i/0.1i+h+o0.3i/0.4i -Ct.cpt -W0.001 -F+gwhite+p0.5p -Bxaf -By+l"km" >> classic_map.ps
-    gmt psconvert -Tf -P -A -Z classic_map.ps
+    gmt grdimage -Ct.cpt -Iintens.nc data.nc -JM6i -P -K > $ps
+    gmt pscoast -Rdata.nc -J -O -Dh -Baf -W0.75p -K >> $ps
+    echo "Japan Trench" | gmt pstext -F+f32p+cTC -Dj0/0.2i -Gwhite -R -J -O -K >> $ps
+    gmt psxy -W2p lines.txt -R -J -O -K >> $ps
+    gmt psscale -R -J -O -DjBL+w3i/0.1i+h+o0.3i/0.4i -Ct.cpt -W0.001 -F+gwhite+p0.5p -Bxaf -By+l"km" >> $ps
 
 is equivalent to the following in modern mode::
 
-    gmt begin
+    ps=map
+
+    gmt begin $ps ps
+
     gmt grdgradient -Nt0.2 -A45 data.nc -Gintens.nc
     gmt makecpt -Cgeo -T-8000/2000 > t.cpt
     gmt grdimage -Ct.cpt -Iintens.nc data.nc -JM6i -P
-    gmt pscoast -Dh -Baf -W0.75p
+    gmt pscoast -Rdata.nc -Dh -Baf -W0.75p
     echo "Japan Trench" | gmt pstext -F+f32p+cTC -Dj0/0.2i -Gwhite
     gmt psxy -W2p lines.txt
     gmt psscale -DjBL+w3i/0.1i+h+o0.3i/0.4i -Ct.cpt -W0.001 -F+gwhite+p0.5p -Bxaf -By+l"km"
-    gmt psconvert -Tf -P -A -Fmodern_map
+    rm -f intens.nc t.cpt
+
     gmt end
 
 See the scripts and data in the ``example`` folder.
 
-Read more about modern mode at:
-
-* `Version 2.0 of the modern mode spec <http://gmt.soest.hawaii.edu/boards/2/topics/5138>`__
-* `Initial proposal <http://gmt.soest.hawaii.edu/projects/gmt/wiki/Modernization>`__
+Read more about modern mode at the
+`Modernization wiki page <http://gmt.soest.hawaii.edu/projects/gmt/wiki/Modernization>`__.
 
 
 Installing
