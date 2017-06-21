@@ -6,6 +6,8 @@ notifications:
 branches:
     only:
         - master
+        # Regex to build tagged commits with version numbers
+        - /\d+\.\d+(\.\d+)?(-\S*)?$/
 
 language: python
 
