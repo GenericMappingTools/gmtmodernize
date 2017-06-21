@@ -103,8 +103,8 @@ def main():
         gmt_scripts = [args['SCRIPT']]
         output_names = [None]
 
-        def save_output(script, fname):
-            print(script)
+        def save_output(content, *args, **kwargs):
+            print(content)
 
     else:
         input_dir = os.path.normpath(args['FOLDER_CLASSIC'])
@@ -131,16 +131,18 @@ def main():
         output_names = [script.replace(input_dir, output_dir)
                         for script in gmt_scripts]
 
-        def save_output(script, fname):
+        def save_output(content, fname, original_fname):
             with open(fname, 'w') as outputfile:
-                outputfile.write(script)
+                outputfile.write(content)
+            # Copy the file permissions to the modern script
+            shutil.copymode(original_fname, fname)
 
     echo("Converting scripts to modern mode:")
-    for script, fname in zip(gmt_scripts, output_names):
-        with open(script) as inputfile:
+    for classic_fname, modern_fname in zip(gmt_scripts, output_names):
+        with open(classic_fname) as inputfile:
             classic_script = inputfile.read()
         modern_script = modernize(classic_script)
-        save_output(modern_script, fname)
-        echo('  {}'.format(fname))
+        save_output(modern_script, modern_fname, classic_fname)
+        echo('  {}'.format(modern_fname))
 
     echo("Done")
