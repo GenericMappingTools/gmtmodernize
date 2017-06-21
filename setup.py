@@ -30,7 +30,7 @@ PACKAGE_DATA = {
     ],
 }
 CLASSIFIERS = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Science/Research",
     "Intended Audience :: Developers",
     "Intended Audience :: Education",
@@ -50,7 +50,6 @@ ENTRY_POINTS = {
 # #############################################################################
 INSTALL_REQUIRES = [
     'docopt',
-    # 'tqdm',
 ]
 
 if __name__ == '__main__':

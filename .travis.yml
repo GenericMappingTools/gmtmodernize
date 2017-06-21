@@ -15,11 +15,9 @@ os:
 matrix:
     include:
         - python: '3.4'
-          env: GMT=5.4.1
         - python: '3.5'
-          env: GMT=5.4.1
         - python: '3.6'
-          env: GMT=5.4.1 COVERAGE=true
+          env: COVERAGE=true
 
 env:
     global:
@@ -31,6 +29,7 @@ before_install:
     - conda update --yes conda
     - conda install --yes python=$TRAVIS_PYTHON_VERSION pip -c conda-forge
     - conda install --yes --file requirements.txt -c conda-forge
+    - conda install --yes --file requirements-dev.txt -c conda-forge
     - if [ "$COVERAGE" == "true" ]; then pip install coveralls==0.5; fi
     - conda list
 
