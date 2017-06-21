@@ -66,9 +66,15 @@ Read more about modern mode at the
 Installing
 ----------
 
-``gmtmodernize`` is in **alpha** status and can be installed using ``pip``::
+Install the latest release using the ``pip`` package manager::
 
-    pip install gmtmodernize --pre
+    pip install gmtmodernize
+
+To install the development version from the Github *master* branch::
+
+    git clone https://github.com/GenericMappingTools/gmtmodernize.git
+    cd gmtmodernize
+    pip install .
 
 
 Using
