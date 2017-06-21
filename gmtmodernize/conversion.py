@@ -61,13 +61,14 @@ def modernize(script):
     # Copy the header comments and add a command to set the mode
     # to modern after the header
     for line in script:
-        line = line.strip()
+        line = line.rstrip()
         if not line or line[0] != '#':
             break
         modern.append(line)
     last_line = len(modern)
 
     # Look for the "ps" variable definition and extract the name
+    ps_var_line = None
     for l, line in enumerate(script[last_line:]):
         line = line.strip()
         # Check if this line defines a .ps file name variable
@@ -81,15 +82,19 @@ def modernize(script):
             modern.append(line)
             ps_var_line = last_line + l
             break
-    script.pop(ps_var_line)
+    if ps_var_line is not None:
+        script.pop(ps_var_line)
+        begin_args = " $ps ps"
+    else:
+        begin_args = ""
 
     modern.append('')
-    modern.append('gmt begin $ps ps')
+    modern.append('gmt begin{}'.format(begin_args))
     modern.append('')
 
     # Parse the rest of the script
     for line in script[last_line:]:
-        line = line.strip()
+        line = line.rstrip()
 
         # Check if redirecting to the $ps variable and strip it out
         redirect_to_ps = re.findall(r'.+>+ *\$ps(?: +|$)', line)
