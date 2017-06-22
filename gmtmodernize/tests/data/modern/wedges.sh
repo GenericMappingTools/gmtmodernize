@@ -27,6 +27,5 @@ echo 50 -30 -50 -110  | gmt psxy -SW30d+a -W2p
 echo -50 -30 50 110  | gmt psxy -SW30d -Gorange
 echo -50 -30 50 110  | gmt psxy -SW30d+r -W2p
 echo -10 80 -60 240  | gmt psxy -SW20d -W2p -Gyellow
-gmt psxy -T
 
 gmt end
