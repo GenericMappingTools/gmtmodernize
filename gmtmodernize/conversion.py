@@ -112,6 +112,11 @@ def modernize(script):
                 line = line.replace(match, '')
             line = line.strip()
 
+        # Remove stray "psxy -T" used to end the postscript plots
+        stray_psxy = re.findall(r'psxy -T(?: +|$)', line)
+        if stray_psxy:
+            line = ""
+
         modern.append(line)
 
     modern.append('')
