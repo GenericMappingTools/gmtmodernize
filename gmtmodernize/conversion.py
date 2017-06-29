@@ -40,7 +40,7 @@ pssegy
 """.split()
 
 
-def modernize(script):
+def modernize(script, debug=False):
     """
     Convert a script from classic to modern mode.
 
@@ -48,6 +48,8 @@ def modernize(script):
     ----------
     script : str
         Classic mode script.
+    debug : bool
+        If True, will add "-Vd" to calls to ``gmt begin`` and ``gmt end``.
 
     Returns
     -------
@@ -88,6 +90,9 @@ def modernize(script):
     else:
         begin_args = ""
 
+    if debug:
+        begin_args = begin_args + ' -Vd'
+
     modern.append('')
     modern.append('gmt begin{}'.format(begin_args))
     modern.append('')
@@ -120,7 +125,10 @@ def modernize(script):
         modern.append(line)
 
     modern.append('')
-    modern.append('gmt end')
+    if debug:
+        modern.append('gmt end -Vd')
+    else:
+        modern.append('gmt end')
     modern.append('')
 
     # Remove duplicate blank lines

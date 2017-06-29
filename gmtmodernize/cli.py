@@ -4,8 +4,8 @@ Prints the converted modern mode script to standard output (STDOUT) when
 converting a single script.
 
 Usage:
-    gmtmodernize SCRIPT
-    gmtmodernize --recursive [--quiet] FOLDER_CLASSIC FOLDER_MODERN
+    gmtmodernize [--debug] SCRIPT
+    gmtmodernize --recursive [--debug] [--quiet] FOLDER_CLASSIC FOLDER_MODERN
     gmtmodernize --help
     gmtmodernize --version
 
@@ -22,6 +22,8 @@ Options:
                     and other files instead of converting a single file.
                     Creates a new folder with the same structure and non-script
                     files copied over, plus the converted GMT scripts.
+    --debug         Add debugging flags ('-Vd') to 'gmt begin' and 'gmt end'
+                    commands.
     --quiet         Don't print any text to STDERR while processing.
     -h --help       Show this help message and exit.
     --version       Show the version and exit.
@@ -141,7 +143,7 @@ def main():
     for classic_fname, modern_fname in zip(gmt_scripts, output_names):
         with open(classic_fname) as inputfile:
             classic_script = inputfile.read()
-        modern_script = modernize(classic_script)
+        modern_script = modernize(classic_script, debug=args['--debug'])
         save_output(modern_script, modern_fname, classic_fname)
         echo('  {}'.format(modern_fname))
 
