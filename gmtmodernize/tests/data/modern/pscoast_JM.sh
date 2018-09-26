@@ -7,6 +7,6 @@ ps=pscoast_JM
 
 gmt begin $ps ps
 
-gmt pscoast -R90/290/-70/65 -JM6i -P -Ggray -Baf
+gmt pscoast -R90/290/-70/65 -JM6i -Ggray -Baf
 
 gmt end

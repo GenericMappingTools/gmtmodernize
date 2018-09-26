@@ -10,7 +10,7 @@ gmt begin $ps ps
 gmt gmtset PROJ_ELLIPSOID Sphere
 
 # Cartesian
-gmt psbasemap -R0/6/0/3 -Jx1i -P -Xc -Bafg
+gmt psbasemap -R0/6/0/3 -Jx1i -Xc -Bafg
 echo 0.5 0.5 30 100  | gmt psxy -Sw2i -Gred -W2p
 echo 2.5 0.5 30 100  | gmt psxy -Sw2i -Gred
 echo 4.5 0.5 30 100  | gmt psxy -Sw2i -W1
