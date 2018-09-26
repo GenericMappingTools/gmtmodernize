@@ -7,7 +7,7 @@ ps=grdcontour
 gmt begin $ps ps
 
 contour="gmt grdcontour -A200 -C100 -Gd4 xz-temp.nc -Jx0.4c/0.4c -Ba5f1 -BWNse -Wathin,grey -Wcdefault,grey"
-$contour -R-100/-60/3/21.02 -P -Y1.5c
+$contour -R-100/-60/3/21.02 -Y1.5c
 $contour -R-100/-60/3/20 -Y9c
 echo 100 C >  cont.dat
 echo 200 A >> cont.dat

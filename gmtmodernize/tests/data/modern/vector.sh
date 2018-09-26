@@ -7,7 +7,7 @@ ps=vector
 
 gmt begin $ps ps
 
-gmt psbasemap -R0/6/0/3 -Jx1i -P -B1g1 -BWSne -Xc
+gmt psbasemap -R0/6/0/3 -Jx1i -B1g1 -BWSne -Xc
 gmt gmtset MAP_VECTOR_SHAPE 0.5
 # Center justified vectors
 gmt psxy -W1p -Gred -S << EOF
@@ -38,7 +38,7 @@ gmt psxy -W1p -S << EOF
 EOF
 # Then with -SV and Mercator
 gmt gmtset MAP_VECTOR_SHAPE 1
-gmt psbasemap -R0/6/0/3 -Jm1i -P -B1g1 -BWSne -Y4i
+gmt psbasemap -R0/6/0/3 -Jm1i -B1g1 -BWSne -Y4i
 # Center justified vectors
 gmt psxy -W1p -Gred -S << EOF
 0.5	0.5	60	1i	V0.2i+jc

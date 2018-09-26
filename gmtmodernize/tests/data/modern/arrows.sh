@@ -8,7 +8,7 @@ xr=`gmt math -Q 1 15 COSD MUL 1.5 ADD =`
 xri=`gmt math -Q 1 15 COSD MUL 1.5 SUB =`
 xl=`gmt math -Q $xr NEG =`
 xli=`gmt math -Q $xri NEG =`
-gmt psbasemap -R-3/3/0/9 -Jx1i -P -Baf -Xc
+gmt psbasemap -R-3/3/0/9 -Jx1i -Baf -Xc
 gmt psxy -W0.5p << EOF
 > -W0.5p
 -1.5	0

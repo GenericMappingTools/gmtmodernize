@@ -6,7 +6,7 @@ ps=logos
 
 gmt begin $ps ps
 
-gmt psxy -R0/8.5/0/11 -Jx1i -X0 -Y0 -P -W4p << EOF
+gmt psxy -R0/8.5/0/11 -Jx1i -X0 -Y0 -W4p << EOF
 > vertical line
 4.25	0.2
 4.25	10.8

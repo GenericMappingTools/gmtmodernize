@@ -7,7 +7,7 @@ ps=plot_symbols
 
 gmt begin $ps ps
 
-gmt psxy -R0/4/1/6 -Jx1i -P -Bg1 -Gred -W0.25p -S1i -X2i -Y2i << EOF
+gmt psxy -R0/4/1/6 -Jx1i -Bg1 -Gred -W0.25p -S1i -X2i -Y2i << EOF
 > Fat pen -W2p
 0.5	5.5	-
 > Plain red symbols -W- -Gred

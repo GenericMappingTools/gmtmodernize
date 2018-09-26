@@ -110,10 +110,10 @@ def modernize(script, debug=False):
             redirection = re.findall(r'>+ *\$ps(?: +|$)', line)[0]
             line = line.replace(redirection, '').strip()
 
-        # Remove -O -K -R -J
-        okrj = re.findall(r'(?:(?<= )|^)-[KORJ](?: +|$)', line)
-        if okrj:
-            for match in okrj:
+        # Remove -O -K -R -J -P
+        okrjp = re.findall(r'(?:(?<= )|^)-[KORJP](?: +|$)', line)
+        if okrjp:
+            for match in okrjp:
                 line = line.replace(match, '')
             line = line.strip()
 
